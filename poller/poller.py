@@ -45,12 +45,46 @@ def fetch_submissions(username):
     data = response.json() #parses the response from leetcode as json so we can work with it in python, converts it into a dictionary
     return data["data"]["recentAcSubmissionList"] #dives into the response to get just the submissions list nothing more
 
-if __name__ == "__main__":
-    submissions = fetch_submissions("oRMwArKAWa") #calls the function with my username to get my submissions
-    for submission in submissions:
-        print(submission) #prints each submission to the console, you can change this to do whatever you want with the submissions data, like save it to a file or something
-
 ### Big Picture of this script:
 #we send a POST request to LC with my cookies as proof of identity
 #and a GraphQL query asking for my recent accepted submissions and what data to return
 #it then just returns a JSON response and we pull the submissions list from it!
+
+#--------------#
+#need another query to get deeper info about each problem, like the difficulty and the topic tags, since that info isn't included in the recent submissions query.
+#the first query just gives us the title and titleSlug, and here we will use the titleslug to get the problem details, which will include the difficulty and topic tags.
+
+PROBLEM_QUERY = """
+query problemDetails($titleSlug: String!) {
+    question(titleSlug: $titleSlug) {
+        difficulty
+        topicTags {
+            name
+        }
+    }
+}
+"""
+#now we just need to use a function to send this query to get the problem details for each problem we get from the query above
+def fetch_problem_details(title_slug):
+    payload = {
+        "query": PROBLEM_QUERY,
+        "variables": {"titleSlug": title_slug} #we pass in the title slug of the problem we want details for, which we got from the recent submissions query
+    }
+    response = requests.post(URL, json=payload, headers=HEADERS) #sends the request to leetcode with the query and headers we set up
+    data = response.json() #parses the response from leetcode as json so we can work with it in python, converts it into a dictionary
+    return data["data"]["question"] #dives into the response to get just the problem details, nothing more
+
+### Big Picture of this part:
+#we have a second query that takes in the title slug of a problem and returns the difficulty
+#and topic tags for that problem, and then we have a function that sends that query to LC and returns the problem details as a dictionary.
+
+
+if __name__ == "__main__":
+    submissions = fetch_submissions("oRMwArKAWa") #calls the function with my username to get my submissions
+    for submission in submissions:
+        details = fetch_problem_details(submission["titleSlug"]) #for each submission, we call the function to get the problem details using the title slug from the submission
+        submission["difficulty"] = details["difficulty"] #we add the difficulty to the submission dictionary
+        submission["topicTags"] = [tag["name"] for tag in details["topicTags"]] #we add the topic tags to the submission dictionary, we have to pull out just the name of each tag since the API returns a list of dictionaries for the topic tags, and we just want a list of the tag names
+    print(submissions) #finally we print out the submissions with the added difficulty and topic tags info, this will be a list of dictionaries where each dictionary represents a submission and contains all the info we pulled from both queries. We can then use this data to do whatever we want, like save it to a file or display it in a nice format or something.
+    
+    
