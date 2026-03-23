@@ -1,6 +1,7 @@
 import requests
 import os
 from dotenv import load_dotenv
+from backend.db import insert_submission
 
 #loads environment variables from .env file so python can see the contents 
 load_dotenv()
@@ -84,7 +85,8 @@ if __name__ == "__main__":
     for submission in submissions:
         details = fetch_problem_details(submission["titleSlug"]) #for each submission, we call the function to get the problem details using the title slug from the submission
         submission["difficulty"] = details["difficulty"] #we add the difficulty to the submission dictionary
-        submission["topicTags"] = [tag["name"] for tag in details["topicTags"]] #we add the topic tags to the submission dictionary, we have to pull out just the name of each tag since the API returns a list of dictionaries for the topic tags, and we just want a list of the tag names
-    print(submissions) #finally we print out the submissions with the added difficulty and topic tags info, this will be a list of dictionaries where each dictionary represents a submission and contains all the info we pulled from both queries. We can then use this data to do whatever we want, like save it to a file or display it in a nice format or something.
+        submission["topics"] = [tag["name"] for tag in details["topicTags"]] #we add the topic tags to the submission dictionary, we have to pull out just the name of each tag since the API returns a list of dictionaries for the topic tags, and we just want a list of the tag names
+        insert_submission(submission) #we insert the submission into the database using the function we defined in db.py, which will handle the database connection and insertion for us, and it will also make sure to avoid duplicates by checking the submission id before inserting
+        print(f"inserted: {submission['title']} | {submission['difficulty']} | {submission['topics']}") #just a print statement to show that the submission was inserted, and to show the title, difficulty, and topics for each submission as it's inserted, so we can see the progress in the console when we run the script
     
     
