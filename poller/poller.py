@@ -2,6 +2,7 @@ import requests
 import os
 from dotenv import load_dotenv
 from backend.db import insert_submission
+from backend.queue import push_to_queue
 
 #loads environment variables from .env file so python can see the contents 
 load_dotenv()
@@ -86,7 +87,9 @@ if __name__ == "__main__":
         details = fetch_problem_details(submission["titleSlug"]) #for each submission, we call the function to get the problem details using the title slug from the submission
         submission["difficulty"] = details["difficulty"] #we add the difficulty to the submission dictionary
         submission["topics"] = [tag["name"] for tag in details["topicTags"]] #we add the topic tags to the submission dictionary, we have to pull out just the name of each tag since the API returns a list of dictionaries for the topic tags, and we just want a list of the tag names
-        insert_submission(submission) #we insert the submission into the database using the function we defined in db.py, which will handle the database connection and insertion for us, and it will also make sure to avoid duplicates by checking the submission id before inserting
-        print(f"inserted: {submission['title']} | {submission['difficulty']} | {submission['topics']}") #just a print statement to show that the submission was inserted, and to show the title, difficulty, and topics for each submission as it's inserted, so we can see the progress in the console when we run the script
-    
-    
+        push_to_queue(submission) #instead of inserting directly into the database, we push the submission onto the queue, and then the backend will pull from the queue and insert into the database, this way we decouple the poller from the database and let FastAPI handle the queue and database interactions, which is more efficient and scalable.
+
+# Big picture of this script:
+# this script is responsible for pulling my recent accepted submissions from LeetCode using their GraphQL
+# API, and then for each submission, it gets the problem details like difficulty and topic tags, and then it pushes the submission onto a Redis queue, 
+# which the backend will read from and insert into the database.

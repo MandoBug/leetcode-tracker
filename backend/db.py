@@ -37,3 +37,9 @@ def insert_submission(submission):
     conn.commit()
     cur.close()
     conn.close()
+    
+    #Big picture of this file:
+    #this is where we connect to our database and insert the submissions that we get from the
+    #poller. We have a function to get a connection to the database, and then a function to insert a submission into the database.
+    #the insert function takes a submission dictionary as input, and then it uses the values from
+    #the dictionary to fill in the values in the SQL query, and then it executes the query to insert the submission into the database.
