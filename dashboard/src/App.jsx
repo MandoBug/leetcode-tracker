@@ -21,7 +21,7 @@ function App() {
   if (loading) return <p>loading...</p>
 
   return (
-    <div style={{ padding: "2rem", fontFamily: "sans-serif", background: "#0f0f0f", minHeight: "100vh", color: "white" }}>
+    <div style={{ padding: "2rem", fontFamily: "montserrat", background: "#0f0f0f", minHeight: "100vh", color: "white" }}>
       <h1>LeetCode Tracker</h1>
       <TopicChart topics={topics} />
       <SubmissionFeed submissions={submissions} />

@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from backend.db import get_connection
 from backend.queue import get_cache, set_cache
+from ml.recommender import get_recommendations
 
 app = FastAPI() #this is our FastAPI app, which will handle the API requests from the frontend and interact with the database and queue
 
@@ -98,6 +99,20 @@ def get_topics():
 # since it's just a simple query and it will be fast enough even without caching, but we could easily add caching 
 # here if we wanted to by just calling set_cache like we do in the submissions endpoint.
 
+@app.get("/recommendations")
+def recommendations():
+    #check cache first like before
+    cached = get_cache("recommendations")
+    if cached:
+        print("cache hit")
+        return cached #if we have cached data, we return it instead of hitting the database
+    
+    print("cache miss, generating recommendations")
+    recs = get_recommendations() #if we have a cache miss, we call the get_recommendations function from our recommender module to generate the recommendations based on the data in the database
+    
+    set_cache("recommendations", recs, 660) #cache the recommendations for 6 minutes, since they are a bit more expensive to generate than just a simple query, we want to cache them to improve performance and reduce load on the database
+    
+    return recs #return the recommendations as a JSON response to the frontend
 
 # Big picture of this file:
 # this is where we set up our FastAPI app and define the API endpoints that the frontend
