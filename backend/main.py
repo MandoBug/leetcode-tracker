@@ -114,6 +114,23 @@ def recommendations():
     
     return recs #return the recommendations as a JSON response to the frontend
 
+@app.get("/recommendations/refresh")
+def refresh_problem(topic: str):
+    conn = get_connection() #get a connection to the database
+    cur = conn.cursor() #create a cursor to execute queries
+    cur.execute("SELECT DISTINCT title FROM submissions") #execute a query to get the list of problems we've already submitted, so we can exclude them from the refresh recommendations
+    solved_titles = [row[0] for row in cur.fetchall()]
+    cur.close() #close the cursor
+    conn.close() #close the database connection
+    
+    from ml.recommender import get_refresh_problem 
+    new_problem = get_refresh_problem(topic, solved_titles) #call the get_refresh_problem function from our recommender module to get a new problem to refresh on for the given topic, we pass in the list
+    # of solved titles so it can exclude those from the recommendations and give us a problem we haven't solved before to refresh on
+    return new_problem
+
+
+
+
 # Big picture of this file:
 # this is where we set up our FastAPI app and define the API endpoints that the frontend
 # will call to get the data it needs, we have an endpoint to get the list of submissions and 

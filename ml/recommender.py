@@ -99,13 +99,12 @@ def get_refresh_problem(topic, exclude_titles, difficulty=None):
     conn.close()
     return {"title": row[0], "slug": row[1]} if row else None
 
-#No we fetch oldest problems for a topic, which are the ones I should be refreshing on
+#Now we fetch oldest problems for a topic, which are the ones I should be refreshing on
 def get_oldest_problem(topic):
-    """gets the oldest problem you solved in this topic to refresh your memory"""
     conn = get_connection()
     cur = conn.cursor()
     cur.execute("""
-        SELECT title, submitted_at FROM submissions
+        SELECT title, title_slug, submitted_at FROM submissions
         WHERE %s = ANY(topics)
         ORDER BY submitted_at ASC
         LIMIT 1
@@ -114,8 +113,8 @@ def get_oldest_problem(topic):
     cur.close()
     conn.close()
     if row:
-        days_ago = (datetime.now(timezone.utc) - row[1].replace(tzinfo=timezone.utc)).days
-        return {"title": row[0], "days_ago": days_ago}
+        days_ago = (datetime.now(timezone.utc) - row[2].replace(tzinfo=timezone.utc)).days
+        return {"title": row[0], "slug": row[1], "days_ago": days_ago}
     return None
 
 # finally we can put it all together in a function that gets the stats, calculates scores, 
