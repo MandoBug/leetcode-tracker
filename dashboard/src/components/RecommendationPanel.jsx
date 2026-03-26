@@ -9,83 +9,80 @@ const tierColors = {
 function RecommendationCard({ rec, onRefresh }) {
     return (
         <div style={{
-            background: "#1a1a1a",
-            borderRadius: "10px",
-            padding: "1rem 1.25rem",
-            marginBottom: "0.75rem",
-            borderLeft: `4px solid ${tierColors[rec.tier] || "#666"}`
+            borderLeft: `2px solid ${tierColors[rec.tier] || "#222"}`,
+            paddingLeft: "1rem",
+            marginBottom: "1.25rem",
         }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
                 <div>
-                    <span style={{ fontWeight: "bold", fontSize: "16px" }}>{rec.topic}</span>
                     <span style={{
-                        marginLeft: "0.75rem",
+                        fontSize: "14px",
+                        fontWeight: "600",
+                        color: "#e8e8e8",
+                        marginRight: "0.5rem"
+                    }}>
+                        {rec.topic}
+                    </span>
+                    <span style={{
+                        fontSize: "10px",
                         color: tierColors[rec.tier],
-                        fontSize: "12px",
-                        fontWeight: "bold"
+                        fontFamily: "'DM Mono', monospace",
+                        letterSpacing: "0.06em",
+                        textTransform: "uppercase"
                     }}>
                         {rec.tier}
                     </span>
                 </div>
-                <span style={{ color: "#666", fontSize: "12px" }}>
-                    {rec.count} solved · {rec.days_since_last}d ago · score: {rec.priority_score}
+                <span style={{
+                    fontSize: "10px",
+                    color: "#333",
+                    fontFamily: "'DM Mono', monospace"
+                }}>
+                    {rec.count} solved · {rec.days_since_last}d ago
                 </span>
             </div>
 
-            <div style={{ marginTop: "0.75rem", display: "flex", gap: "1rem", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
                 {rec.refresh_problem && (
-                    <div style={{
-                        background: "#111",
-                        borderRadius: "6px",
-                        padding: "0.5rem 0.75rem",
-                        fontSize: "13px"
-                    }}>
-                        {"🔁 "}
-                        <span style={{ color: "#aaa" }}>Refresh: </span>
+                    <div style={{ fontSize: "12px", color: "#555" }}>
+                        <span style={{ color: "#333", marginRight: "0.4rem", fontFamily: "'DM Mono', monospace", fontSize: "10px" }}>REFRESH</span>
                         <a
-                            href={`https://leetcode.com/problems/${rec.refresh_problem.slug || rec.topic.toLowerCase().replace(/ /g, "-")}`}
+                            href={`https://leetcode.com/problems/${rec.refresh_problem.slug}`}
                             target="_blank"
                             rel="noreferrer"
-                            style={{ color: "#60a5fa" }}
+                            style={{ color: "#60a5fa", textDecoration: "none" }}
                         >
                             {rec.refresh_problem.title}
                         </a>
-                        <span style={{ color: "#555", marginLeft: "0.5rem" }}>
-                            ({rec.refresh_problem.days_ago}d ago)
+                        <span style={{ color: "#2a2a2a", marginLeft: "0.4rem", fontFamily: "'DM Mono', monospace", fontSize: "10px" }}>
+                            {rec.refresh_problem.days_ago}d ago
                         </span>
                     </div>
                 )}
 
                 {rec.new_problem && (
-                    <div style={{
-                        background: "#111",
-                        borderRadius: "6px",
-                        padding: "0.5rem 0.75rem",
-                        fontSize: "13px",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.5rem"
-                    }}>
-                        {"🆕 "}
-                        <span style={{ color: "#aaa" }}>Try: </span>
+                    <div style={{ fontSize: "12px", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                        <span style={{ color: "#333", fontFamily: "'DM Mono', monospace", fontSize: "10px" }}>TRY</span>
                         <a
                             href={`https://leetcode.com/problems/${rec.new_problem.slug}`}
                             target="_blank"
                             rel="noreferrer"
-                            style={{ color: "#34d399" }}
+                            style={{ color: "#34d399", textDecoration: "none" }}
                         >
                             {rec.new_problem.title}
                         </a>
                         <button
                             onClick={() => onRefresh(rec.topic)}
                             style={{
-                                background: "#222",
-                                border: "1px solid #333",
+                                background: "transparent",
+                                border: "1px solid #1f1f1f",
                                 borderRadius: "4px",
-                                color: "#aaa",
+                                color: "#444",
                                 cursor: "pointer",
-                                fontSize: "11px",
-                                padding: "2px 8px"
+                                fontSize: "10px",
+                                padding: "2px 7px",
+                                fontFamily: "'DM Mono', monospace",
+                                letterSpacing: "0.04em"
                             }}
                         >
                             reroll
@@ -115,9 +112,17 @@ function RecommendationPanel({ recommendations, setRecommendations }) {
     }
 
     return (
-        <div style={{ marginBottom: "2rem" }}>
-            <h2>{"🎯 What to Study Next"}</h2>
-            {loading && <p style={{ color: "#666" }}>finding new problem...</p>}
+        <div>
+            {loading && (
+                <p style={{
+                    fontSize: "11px",
+                    color: "#444",
+                    fontFamily: "'DM Mono', monospace",
+                    marginBottom: "1rem"
+                }}>
+                    finding problem...
+                </p>
+            )}
             {recommendations.map(rec => (
                 <RecommendationCard
                     key={rec.topic}
