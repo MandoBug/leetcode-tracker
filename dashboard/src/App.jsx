@@ -2,208 +2,262 @@ import { useState, useEffect } from "react"
 import TopicChart from "./components/TopicChart"
 import SubmissionFeed from "./components/SubmissionFeed"
 import RecommendationPanel from "./components/RecommendationPanel"
+import TopicRadar from "./components/RadarChart"
+import ActivityHeatmap from "./components/ActivityHeatmap"
+import ProgressChart from "./components/ProgressChart"
 
 const styles = `
-  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap');
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body {
-    background: #080808;
-    color: #e8e8e8;
-    font-family: 'DM Sans', sans-serif;
+  html, body, #root {
+    width: 100%;
     min-height: 100vh;
   }
 
-  .app {
-    max-width: 2000px;
-    margin: 0 auto;
-    padding:  2.5rem 1.25rem;
+  body {
+    background: #060606;
+    color: #e0e0e0;
+    font-family: 'DM Sans', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
   }
 
+  .app {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* TOP BAR */
   .top-bar {
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-bottom: 2.5rem;
-    padding-bottom: 1.5rem;
-    border-bottom: 1px solid #1a1a1a;
+    padding: 1.25rem 2.5rem;
+    border-bottom: 1px solid #111;
+    position: sticky;
+    top: 0;
+    background: rgba(6,6,6,0.95);
+    backdrop-filter: blur(16px);
+    z-index: 100;
   }
 
   .wordmark {
     font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    font-weight: 400;
-    color: #444;
-    letter-spacing: 0.12em;
+    font-size: 12px;
+    color: #333;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
   }
 
-  .live-dot {
+  .live-badge {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 7px;
     font-family: 'DM Mono', monospace;
     font-size: 11px;
-    color: #444;
-    letter-spacing: 0.08em;
+    color: #2a2a2a;
+    letter-spacing: 0.1em;
   }
 
-  .live-dot::before {
+  .live-badge::before {
     content: '';
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
     background: #22c55e;
-    box-shadow: 0 0 6px #22c55e;
-    animation: pulse 2s infinite;
+    box-shadow: 0 0 8px #22c55e88;
+    animation: pulse 2.5s ease-in-out infinite;
   }
 
   @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
   }
 
-  .main-grid {
+  /* MAIN GRID — true full width, two columns */
+  .main {
     display: grid;
-    grid-template-columns: 400px 1fr;
-    gap: 1.5rem;
-    align-items: start;
+    grid-template-columns: 320px 1fr;
+    flex: 1;
+    width: 100%;
   }
 
-  .left-col {
+  /* LEFT SIDEBAR */
+  .sidebar {
+    border-right: 1px solid #111;
+    padding: 2rem 1.75rem;
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 2.5rem;
     position: sticky;
-    top: 2rem;
+    top: 53px;
+    height: calc(100vh - 53px);
+    overflow-y: auto;
+    width: 100%;
   }
 
-  .right-col {
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
-  }
-
-  .card {
-    background: #0e0e0e;
-    border: 1px solid #1a1a1a;
-    border-radius: 18px;
-    padding: 1.5rem;
-  }
-
-  .profile-card {
-    text-align: center;
-  }
+  .sidebar::-webkit-scrollbar { display: none; }
 
   .avatar-wrap {
     position: relative;
-    display: inline-block;
     margin-bottom: 1rem;
+    display: inline-block;
   }
 
   .avatar {
-    width: 100px;
-    height: 100px;
-    border-radius: 60%;
-    border: 2px solid #1f1f1f;
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    border: 1px solid #1a1a1a;
     display: block;
   }
 
-  .avatar-ring {
+  .online-ring {
     position: absolute;
-    inset: -4px;
+    bottom: 1px;
+    right: 1px;
+    width: 11px;
+    height: 11px;
     border-radius: 50%;
-    border: 1px solid #2a2a2a;
+    background: #22c55e;
+    border: 2px solid #060606;
+    box-shadow: 0 0 6px #22c55e66;
   }
 
   .profile-name {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 600;
-    color: #f0f0f0;
-    margin-bottom: 4px;
-    letter-spacing: -0.02em;
+    color: #f5f5f5;
+    letter-spacing: -0.03em;
+    margin-bottom: 3px;
   }
 
   .profile-title {
     font-family: 'DM Mono', monospace;
-    font-size: 11px;
-    color: #555;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    margin-bottom: 1rem;
-    line-height: 1.6;
+    font-size: 12px;
+    color: #333;
+    letter-spacing: 0.04em;
+    line-height: 1.9;
+    margin-bottom: 0.9rem;
   }
 
   .profile-bio {
     font-size: 13px;
-    color: #666;
-    line-height: 1.7;
-    margin-bottom: 1.25rem;
+    color: #444;
+    line-height: 1.75;
+    margin-bottom: 1.1rem;
+    font-style: italic;
+    font-weight: 300;
   }
 
   .profile-links {
     display: flex;
     gap: 0.5rem;
-    justify-content: center;
   }
 
   .profile-link {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 14px;
-    border-radius: 6px;
-    border: 1px solid #1f1f1f;
-    background: #111;
-    color: #aaa;
+    padding: 5px 12px;
+    border-radius: 5px;
+    border: 1px solid #181818;
+    background: transparent;
+    color: #444;
     text-decoration: none;
-    font-size: 12px;
+    font-size: 11px;
     font-family: 'DM Mono', monospace;
-    transition: all 0.15s ease;
+    letter-spacing: 0.05em;
+    transition: all 0.12s ease;
   }
 
-  .profile-link:hover {
-    border-color: #333;
-    color: #e8e8e8;
-    background: #161616;
+  .profile-link:hover { border-color: #2a2a2a; color: #bbb; }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: #272727;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    margin-bottom: 0.9rem;
   }
 
   .stat-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
+    gap: 1px;
+    background: #111;
+    border: 1px solid #111;
+    border-radius: 10px;
+    overflow: hidden;
   }
 
   .stat-box {
-    background: #111;
-    border: 1px solid #1a1a1a;
-    border-radius: 8px;
-    padding: 0.875rem;
+    background: #090909;
+    padding: 1rem 0.9rem;
   }
 
   .stat-value {
     font-family: 'DM Mono', monospace;
-    font-size: 22px;
-    font-weight: 500;
+    font-size: 26px;
+    font-weight: 400;
     color: #f0f0f0;
     line-height: 1;
     margin-bottom: 4px;
+    letter-spacing: -0.02em;
   }
 
   .stat-label {
-    font-size: 11px;
-    color: #555;
-    letter-spacing: 0.04em;
+    font-size: 12px;
+    color: #2e2e2e;
   }
 
-  .section-label {
+  /* RIGHT CONTENT */
+  .content {
+    width: 100%;
+    padding: 2rem 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 3rem;
+  }
+
+  .section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    width: 100%;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+  }
+
+  .section-title {
     font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    color: #444;
-    letter-spacing: 0.12em;
+    font-size: 14px;
+    color: #272727;
+    letter-spacing: 0.22em;
     text-transform: uppercase;
-    margin-bottom: 1rem;
+    white-space: nowrap;
+  }
+
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: #111;
+  }
+
+  .chart-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2.5rem;
+    width: 100%;
+    align-items: center;
   }
 
   .loading {
@@ -211,27 +265,28 @@ const styles = `
     align-items: center;
     justify-content: center;
     height: 100vh;
+    width: 100%;
     font-family: 'DM Mono', monospace;
-    font-size: 13px;
-    color: #333;
-    letter-spacing: 0.1em;
-  }
-
-  .loading::after {
-    content: '...';
-    animation: dots 1.5s infinite;
-  }
-
-  @keyframes dots {
-    0%, 100% { opacity: 0.2; }
-    50% { opacity: 1; }
+    font-size: 12px;
+    color: #1f1f1f;
+    letter-spacing: 0.15em;
   }
 `
+
+function SectionHeader({ label }) {
+  return (
+    <div className="section-header">
+      <span className="section-title">{label}</span>
+      <div className="section-line" />
+    </div>
+  )
+}
 
 function App() {
   const [submissions, setSubmissions] = useState([])
   const [topics, setTopics] = useState([])
   const [recommendations, setRecommendations] = useState([])
+  const [activity, setActivity] = useState([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -239,10 +294,12 @@ function App() {
       fetch("http://localhost:8000/submissions").then(res => res.json()),
       fetch("http://localhost:8000/topics").then(res => res.json()),
       fetch("http://localhost:8000/recommendations").then(res => res.json()),
-    ]).then(([submissionsData, topicsData, recommendationsData]) => {
+      fetch("http://localhost:8000/activity").then(res => res.json()),
+    ]).then(([submissionsData, topicsData, recommendationsData, activityData]) => {
       setSubmissions(submissionsData)
       setTopics(topicsData)
       setRecommendations(recommendationsData)
+      setActivity(activityData)
       setLoading(false)
     })
   }, [])
@@ -254,9 +311,8 @@ function App() {
     </>
   )
 
-  const totalSolved = submissions.length
-  const medHard = submissions.filter(s => s.difficulty === "Medium" || s.difficulty === "Hard").length
-  const topTopics = topics.slice(0, 2).map(t => t.topic).join(", ")
+  const totalSolved = new Set(submissions.map(s => s.title)).size
+  const medHard = new Set(submissions.filter(s => s.difficulty === "Medium" || s.difficulty === "Hard").map(s => s.title)).size
   const streak = [...new Set(submissions.map(s => s.submitted_at?.slice(0, 10)))].length
 
   return (
@@ -265,61 +321,42 @@ function App() {
       <div className="app">
 
         <div className="top-bar">
-          <span className="wordmark">LC Tracker</span>
-          <span className="live-dot">live</span>
+          <span className="wordmark">LC · Tracker</span>
+          <span className="live-badge">live</span>
         </div>
 
-        <div className="main-grid">
+        <div className="main">
 
-          {/* LEFT COLUMN */}
-          <div className="left-col">
+          {/* SIDEBAR */}
+          
+          <div className="sidebar">
 
-            {/* Profile Card */}
-            <div className="card profile-card">
+            <div style={{ textAlign: "center"}}>
               <div className="avatar-wrap">
-                <img
-                  src="https://github.com/MandoBug.png"
-                  alt="Armando"
-                  className="avatar"
-                />
-                <div className="avatar-ring" />
+                <img src="https://github.com/MandoBug.png" alt="Armando" className="avatar" />
+                <div className="online-ring" />
               </div>
               <div className="profile-name">Armando Tamayo</div>
               <div className="profile-title">
-                Computer Engineering<br />
-                {"&"} Applied Mathematics<br />
+                Computer Engineering · Applied Mathematics<br />
                 UC Santa Cruz
               </div>
               <div className="profile-bio">
                 Building things that actually work — from low-level systems to full-stack apps to ML pipelines. Currently grinding LeetCode daily.
               </div>
               <div className="profile-links">
-                <a
-                  href="https://github.com/MandoBug"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="profile-link"
-                >
-                  GitHub
-                </a>
-                <a
-                  href="https://www.linkedin.com/in/armando-tamayo-518519335/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="profile-link"
-                >
-                  LinkedIn
-                </a>
+                <a href="https://github.com/MandoBug" target="_blank" rel="noreferrer" className="profile-link">GitHub</a>
+                <a href="https://www.linkedin.com/in/armando-tamayo-518519335/" target="_blank" rel="noreferrer" className="profile-link">LinkedIn</a>
+                <a href="mailto:mandoschool1@gmail.com" className="profile-link">Email</a>
               </div>
             </div>
 
-            {/* Stats Card */}
-            <div className="card">
+            <div>
               <div className="section-label">Stats</div>
               <div className="stat-grid">
                 <div className="stat-box">
                   <div className="stat-value">{totalSolved}</div>
-                  <div className="stat-label">problems solved</div>
+                  <div className="stat-label">unique solved</div>
                 </div>
                 <div className="stat-box">
                   <div className="stat-value">{streak}</div>
@@ -336,30 +373,43 @@ function App() {
               </div>
             </div>
 
-            {/* Submission Feed */}
-            <div className="card">
+            <div>
               <div className="section-label">Recent</div>
               <SubmissionFeed submissions={submissions} />
             </div>
 
           </div>
 
-          {/* RIGHT COLUMN */}
-          <div className="right-col">
-            <div className="card">
-              <div className="section-label">What to study next</div>
+          {/* CONTENT */}
+          <div className="content">
+
+            <div className="section">
+              <SectionHeader label="Topic analysis" />
+              <div className="chart-grid">
+                <TopicChart topics={topics} />
+                <TopicRadar topics={topics} />
+              </div>
+            </div>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+            <div className="section">
+              <SectionHeader label="Activity — last 6 months" />
+              <ActivityHeatmap activity={activity} />
+            </div>
+            </div>
+            <div className="section">
+              <SectionHeader label="Progress over time" />
+              <ProgressChart activity={activity} />
+            </div>
+
+            <div className="section">
+              <SectionHeader label="What to study next" />
               <RecommendationPanel
                 recommendations={recommendations}
                 setRecommendations={setRecommendations}
               />
             </div>
 
-            <div className="card">
-              <div className="section-label">Topic breakdown</div>
-              <TopicChart topics={topics} />
-            </div>
           </div>
-
         </div>
       </div>
     </>

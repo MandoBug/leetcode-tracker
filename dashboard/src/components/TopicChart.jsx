@@ -11,12 +11,12 @@ function TopicChart({ topics }) {
                     <Tooltip contentStyle={{ background: "#1a1a1a", border: "none", color: "white" }} />
                     <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                         {topics.map((entry, index) => (
-                            <Cell key={index} fill={entry.count >= 5 ? "#22c55e" : entry.count >= 3 ? "#eab308" : "#ef4444"} />
+                            <Cell key={index} fill={entry.count >= 50 ? "#22c55e" : entry.count >= 30 ? "#eab308" : "#ef4444"} />
                         ))}
                     </Bar>
                 </BarChart>
             </ResponsiveContainer>
-            <p style={{ color: "#666", fontSize: "12px" }}>🟢 strong (5+) &nbsp; 🟡 developing (3-4) &nbsp; 🔴 weak (1-2)</p>
+            <p style={{ color: "#666", fontSize: "12px" }}>🟢 strong (50+) &nbsp; 🟡 developing (30-49) &nbsp; 🔴 weak (0-29)</p>
         </div>
     )
 }

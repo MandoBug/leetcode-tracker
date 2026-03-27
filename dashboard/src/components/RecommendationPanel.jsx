@@ -24,7 +24,7 @@ function RecommendationCard({ rec, onRefresh }) {
                         {rec.topic}
                     </span>
                     <span style={{
-                        fontSize: "10px",
+                        fontSize: "12px",
                         color: tierColors[rec.tier],
                         fontFamily: "'DM Mono', monospace",
                         letterSpacing: "0.06em",
@@ -34,7 +34,7 @@ function RecommendationCard({ rec, onRefresh }) {
                     </span>
                 </div>
                 <span style={{
-                    fontSize: "10px",
+                    fontSize: "12px",
                     color: "#333",
                     fontFamily: "'DM Mono', monospace"
                 }}>
@@ -45,7 +45,7 @@ function RecommendationCard({ rec, onRefresh }) {
             <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
                 {rec.refresh_problem && (
                     <div style={{ fontSize: "12px", color: "#555" }}>
-                        <span style={{ color: "#333", marginRight: "0.4rem", fontFamily: "'DM Mono', monospace", fontSize: "10px" }}>REFRESH</span>
+                        <span style={{ color: "#333", marginRight: "0.4rem", fontFamily: "'DM Mono', monospace", fontSize: "12px" }}>REFRESH</span>
                         <a
                             href={`https://leetcode.com/problems/${rec.refresh_problem.slug}`}
                             target="_blank"
@@ -54,7 +54,7 @@ function RecommendationCard({ rec, onRefresh }) {
                         >
                             {rec.refresh_problem.title}
                         </a>
-                        <span style={{ color: "#2a2a2a", marginLeft: "0.4rem", fontFamily: "'DM Mono', monospace", fontSize: "10px" }}>
+                        <span style={{ color: "#2a2a2a", marginLeft: "0.4rem", fontFamily: "'DM Mono', monospace", fontSize: "12px" }}>
                             {rec.refresh_problem.days_ago}d ago
                         </span>
                     </div>
@@ -62,7 +62,7 @@ function RecommendationCard({ rec, onRefresh }) {
 
                 {rec.new_problem && (
                     <div style={{ fontSize: "12px", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                        <span style={{ color: "#333", fontFamily: "'DM Mono', monospace", fontSize: "10px" }}>TRY</span>
+                        <span style={{ color: "#333", fontFamily: "'DM Mono', monospace", fontSize: "12px" }}>TRY</span>
                         <a
                             href={`https://leetcode.com/problems/${rec.new_problem.slug}`}
                             target="_blank"

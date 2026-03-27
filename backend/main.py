@@ -128,7 +128,23 @@ def refresh_problem(topic: str):
     # of solved titles so it can exclude those from the recommendations and give us a problem we haven't solved before to refresh on
     return new_problem
 
-
+@app.get("/activity")
+def get_activity():
+    conn = get_connection() #get a connection to the database
+    cur = conn.cursor() #create a cursor to execute queries
+    cur.execute("""
+        SELECT DATE(submitted_at) as day, COUNT(*) as count
+        FROM submissions
+        GROUP BY day
+        ORDER BY day ASC
+    """) #execute a query to get the count of submissions per day, we group by the submission date and order by date asc so we can see the activity over time
+    rows = cur.fetchall() #fetch all the rows from the query result
+    cur.close() #close the cursor
+    conn.close() #close the database connection
+    
+    data = [{"day": str(row[0]), "count": row[1]} for row in rows]
+    set_cache("activity", data)
+    return data #return the activity data as a JSON response to the frontend
 
 
 # Big picture of this file:
