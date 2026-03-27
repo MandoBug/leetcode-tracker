@@ -127,3 +127,10 @@ if __name__ == "__main__":
     submissions = fetch_all_submissions()
     print(f"total fetched: {len(submissions)} — now enriching and saving accepted ones...")
     save_submissions(submissions)
+    
+# Big picture of this file:
+# this is where we backfill the database with all the past submissions, we have a function
+# that fetches all the submissions from the leetcode API, and then we have another function that takes those submissions,
+# filters out the accepted ones, fetches the problem details for each accepted submission to get the difficulty and topics,
+# and then saves them into the database, we also have some print statements to track the progress
+#just needed this after I got the whole structure for the code working
