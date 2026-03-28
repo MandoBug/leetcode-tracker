@@ -100,7 +100,7 @@ function RecommendationPanel({ recommendations, setRecommendations }) {
     const handleRefresh = async (topic) => {
         setLoading(true)
         try {
-            const res = await fetch(`http://localhost:8000/recommendations/refresh?topic=${encodeURIComponent(topic)}`)
+            const res = await fetch(`https://web-production-804c4.up.railway.app/recommendations/refresh?topic=${encodeURIComponent(topic)}`)
             const data = await res.json()
             setRecommendations(prev =>
                 prev.map(r => r.topic === topic ? { ...r, new_problem: data } : r)

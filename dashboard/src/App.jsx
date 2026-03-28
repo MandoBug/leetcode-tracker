@@ -291,10 +291,10 @@ function App() {
 
   useEffect(() => {
     Promise.all([
-      fetch("http://localhost:8000/submissions").then(res => res.json()),
-      fetch("http://localhost:8000/topics").then(res => res.json()),
-      fetch("http://localhost:8000/recommendations").then(res => res.json()),
-      fetch("http://localhost:8000/activity").then(res => res.json()),
+      fetch("https://web-production-804c4.up.railway.app/submissions").then(res => res.json()),
+      fetch("https://web-production-804c4.up.railway.app/topics").then(res => res.json()),
+      fetch("https://web-production-804c4.up.railway.app/recommendations").then(res => res.json()),
+      fetch("https://web-production-804c4.up.railway.app/activity").then(res => res.json()),
     ]).then(([submissionsData, topicsData, recommendationsData, activityData]) => {
       setSubmissions(submissionsData)
       setTopics(topicsData)

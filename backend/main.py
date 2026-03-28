@@ -10,7 +10,7 @@ app = FastAPI() #this is our FastAPI app, which will handle the API requests fro
 # without this the browser blocks requests from different origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["http://localhost:5173", "https://*.vercel.app"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
