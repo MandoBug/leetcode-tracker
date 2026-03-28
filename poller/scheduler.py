@@ -23,12 +23,12 @@ def run_poller():
     except  Exception as e:
         print(f"poller error: {e}")
 
-#schedule the poller to run every hour
-scheduler.add_job(run_poller, 'interval', hours=1)
+#schedule the poller to run every 10 minutes, we can adjust this as needed, but I think every 10 minutes is a good balance between getting updates in a timely manner and not overwhelming the LC API or our database with too many requests
+scheduler.add_job(run_poller, 'interval', minutes=10)
 
 if __name__ == "__main__":
-    print("scheduler started, polling every hour...")
-    run_poller() #run it once immediately so we don't have to wait an hour for
+    print("scheduler started, polling every ten minutes...")
+    run_poller() #run it once immediately so we don't have to wait an 10 minutes for it
     scheduler.start()
 
 # Big picture of this file:
