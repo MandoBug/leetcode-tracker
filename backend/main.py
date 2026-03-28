@@ -10,9 +10,15 @@ app = FastAPI() #this is our FastAPI app, which will handle the API requests fro
 # without this the browser blocks requests from different origins
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "https://*.vercel.app"],
+    app.add_middleware(
+    CORSMiddleware,
+    allow_origins=[
+        "http://localhost:5173",
+        "https://leetcode-tracker-iota.vercel.app"
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
+)
 )
 
 @app.get("/") # this is just a test endpoint to make sure the API is running, it returns a simple message when we hit the root URL
