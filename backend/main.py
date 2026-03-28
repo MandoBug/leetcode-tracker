@@ -15,6 +15,7 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "https://leetcode-tracker-iota.vercel.app"
+        "https://leetcode-tracker-82b7xf0d2-armando-s-projects-04137c5f.vercel.app/"
     ],
     allow_methods=["*"],
     allow_headers=["*"],
