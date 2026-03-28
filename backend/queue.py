@@ -1,6 +1,7 @@
 import redis
 import json
-
+import os
+from dotenv import load_dotenv
 #this script is responsible for managing the poller sending the data to the backend(FastAPI)
 #we will use redis as a message queue to send the data from the poller to the backend(FastAPI), 
 #and then the backend(FastAPI) will read from the queue and insert the data into the database
@@ -8,9 +9,11 @@ import json
 #without causing any issues with the database and allow FastAPI to handle the queue without being overwhelmed
 #we can also scale this to multiple pollers if we want to, and they can all send data to the same queue without any issues
 
+load_dotenv() #loads the environment variables from the .env file, which is where I have my redis credentials stored so that I don't accidentally share them with the world lol.
 # Set up Redis connection
 # connects to our local redis instance
-r = redis.Redis(host= 'localhost', port=6379, db=0)
+redis_url = os.getenv("REDIS_URL", "redis://localhost:6379") #gets the redis URL from the environment variable, or defaults to localhost if not set
+r = redis.from_url(redis_url) #connects to redis using the URL from the .env file, which is where we have our redis credentials stored so that we don't accidentally share them with the world lol.
 
 # poller calls this to drop a submission onto the queue
 # we convert the submission dict to a JSON string because redis only stores strings
