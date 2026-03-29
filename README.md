@@ -11,7 +11,7 @@ next — with direct links to problems and a reroll button if I don't like the s
 
 ## Live Demo
 
-*(gif coming soon)*
+![LC Tracker demo](assets/lc-tracker-gif.gif)
 
 **[lcdashboard.dev](https://www.lcdashboard.live/)** — live at your own domain once connected
 
