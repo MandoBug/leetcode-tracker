@@ -14,7 +14,8 @@ app.add_middleware(
         "http://localhost:5173",
         "https://leetcode-tracker-iota.vercel.app",
         "https://lcdashboard.live",
-        "https://www.lcdashboard.live"
+        "https://www.lcdashboard.live",
+        
     ],
     allow_credentials=True,
     allow_methods=["*"],

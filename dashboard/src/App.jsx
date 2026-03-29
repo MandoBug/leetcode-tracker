@@ -342,7 +342,7 @@ function App() {
                 UC Santa Cruz
               </div>
               <div className="profile-bio">
-                Building things that actually work — from low-level systems to full-stack apps to ML pipelines. Currently grinding LeetCode daily.
+                Aspiring engineer who builds things to learn things. Open to opportunities — let's connect!
               </div>
               <div className="profile-links">
                 <a href="https://github.com/MandoBug" target="_blank" rel="noreferrer" className="profile-link">GitHub</a>

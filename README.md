@@ -13,7 +13,7 @@ next — with direct links to problems and a reroll button if I don't like the s
 
 *(gif coming soon)*
 
-**[lcdashboard.dev](https://leetcode-tracker-iota.vercel.app/)** — live at your own domain once connected
+**[lcdashboard.dev](https://www.lcdashboard.live/)** — live at your own domain once connected
 
 ---
 
