@@ -5,6 +5,7 @@ from apscheduler.schedulers.blocking import BlockingScheduler
 from poller.poller import fetch_submissions, fetch_problem_details
 from backend.queue import push_to_queue
 from backend.db import get_existing_ids
+from ml.fetch_problems import sync_problems
 
 # this is where we schedule the poller to run every hour, we use the apscheduler library to do this
 scheduler = BlockingScheduler()
@@ -36,6 +37,16 @@ def run_poller():
 
 #schedule the poller to run every 10 minutes, we can adjust this as needed, but I think every 10 minutes is a good balance between getting updates in a timely manner and not overwhelming the LC API or our database with too many requests
 scheduler.add_job(run_poller, 'interval', minutes=10)
+
+# once a week, re-sync the full problem list so new problems and premium flags stay current.
+# ~40 requests to LC, so weekly is plenty. wrapped in try/except for the same reason as run_poller
+def run_problem_sync():
+    try:
+        sync_problems()
+    except Exception as e:
+        print(f"problem sync error: {e}")
+
+scheduler.add_job(run_problem_sync, 'interval', weeks=1)
 
 if __name__ == "__main__":
     print("scheduler started, polling every ten minutes...")

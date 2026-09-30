@@ -1,11 +1,21 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.db import get_connection
+from backend.db import get_connection, ensure_schema
 from backend.queue import get_cache, set_cache
 from ml.recommender import get_recommendations
+from ml.review import get_review_queue
+from ml.goal import get_weekly_goal
 from ml.topics import INTERVIEW_TOPICS
 
-app = FastAPI() #this is our FastAPI app, which will handle the API requests from the frontend and interact with the database and queue
+# lifespan runs the code before `yield` once when the server boots (and anything after it on shutdown).
+# on boot we add any missing columns, see ensure_schema in db.py
+@asynccontextmanager
+async def lifespan(app):
+    ensure_schema()
+    yield
+
+app = FastAPI(lifespan=lifespan) #this is our FastAPI app, which will handle the API requests from the frontend and interact with the database and queue
 
 # this allows my React dashboard to talk to FastAPI
 # without this the browser blocks requests from different origins
@@ -57,7 +67,7 @@ def get_submissions():
             "title": row[1],
             "difficulty": row[2],
             "topics": row[3],
-            # ISO format ("2026-03-26T21:19:40Z") instead of str() ("2026-03-26 21:19:40") — Safari can't parse the space version,
+            # ISO format ("2026-03-26T21:19:40Z") instead of str() ("2026-03-26 21:19:40"). Safari can't parse the space version,
             # and the Z tells the browser it's UTC so it converts to my local time correctly
             "submitted_at": row[4].isoformat() + "Z",
             "status": row[5],
@@ -131,8 +141,29 @@ def recommendations():
     
     return recs #return the recommendations as a JSON response to the frontend
 
+# the most overdue problems to re-solve, based on spaced repetition (see ml/review.py)
+@app.get("/review")
+def review_queue():
+    cached = get_cache("review")
+    if cached:
+        return cached
+    queue = get_review_queue()
+    set_cache("review", queue)
+    return queue
+
+# this week's adaptive goal and progress (see ml/goal.py)
+@app.get("/goal")
+def weekly_goal():
+    cached = get_cache("goal")
+    if cached:
+        return cached
+    goal = get_weekly_goal()
+    set_cache("goal", goal, 120) #short cache so a fresh solve shows up quickly
+    return goal
+
 @app.get("/recommendations/refresh")
-def refresh_problem(topic: str):
+def refresh_problem(topic: str, difficulty: str | None = None):
+    # difficulty is optional: /recommendations/refresh?topic=Trie&difficulty=Easy
     conn = get_connection() #get a connection to the database
     cur = conn.cursor() #create a cursor to execute queries
     cur.execute("SELECT DISTINCT title FROM submissions") #execute a query to get the list of problems we've already submitted, so we can exclude them from the refresh recommendations
@@ -140,9 +171,9 @@ def refresh_problem(topic: str):
     cur.close() #close the cursor
     conn.close() #close the database connection
     
-    from ml.recommender import get_refresh_problem 
-    new_problem = get_refresh_problem(topic, solved_titles) #call the get_refresh_problem function from our recommender module to get a new problem to refresh on for the given topic, we pass in the list
-    # of solved titles so it can exclude those from the recommendations and give us a problem we haven't solved before to refresh on
+    from ml.recommender import get_new_problem 
+    new_problem = get_new_problem(topic, solved_titles, difficulty) #call get_new_problem from our recommender module to get a new problem for the given topic (and difficulty), we pass in the list
+    # of solved titles so it can exclude those from the recommendations and give us a problem we haven't solved before
     return new_problem
 
 @app.get("/activity")

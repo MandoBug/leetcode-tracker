@@ -22,6 +22,21 @@ def get_connection():
             connect_timeout=10
         )
 
+# makes sure the tables have every column the code expects.
+# "ADD COLUMN IF NOT EXISTS" does nothing if the column is already there, so this is safe to run on every startup.
+# that way a new column never breaks production before I get around to running a migration by hand
+def ensure_schema():
+    conn = get_connection()
+    try:
+        cur = conn.cursor()
+        # premium problems: the recommender skips these so "Try" never lands on a paywall.
+        # starts as false for every row until ml/fetch_problems.py fills in the real value from LeetCode
+        cur.execute("ALTER TABLE problems ADD COLUMN IF NOT EXISTS paid_only BOOLEAN NOT NULL DEFAULT FALSE")
+        conn.commit()
+        cur.close()
+    finally:
+        conn.close()
+
 # inserts a single submission into the database
 # if the submission already exists (same id) it just skips it — no duplicates
 def insert_submission(submission):

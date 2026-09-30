@@ -5,7 +5,7 @@ const difficultyColor = {
 }
 
 function SubmissionFeed({ submissions }) {
-    // one row per problem — if I re-solved something, only show the most recent solve
+    // one row per problem: if I re-solved something, only show the most recent solve
     const seen = new Set()
     const recent = []
     for (const s of submissions) {

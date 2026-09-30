@@ -39,9 +39,31 @@ priority_score = (1 / (count + 1)) * recency_weight * difficulty_weight
   doesn't completely dominate a 30-day gap
 - **Difficulty** — if I've only done easy problems in a topic, the weight goes up
 
-Each recommendation comes with a problem to refresh on (oldest one I've solved in that 
-topic) and a new unseen problem suggestion pulled from a local table of all 3,800+ 
-LeetCode problems, with a reroll button if I don't like what it gives me.
+Each recommendation comes with a problem to review and two new problems to try, one Easy 
+and one Medium (for days when my brain is fried vs. days I want real interview practice), 
+pulled from a local table of all 3,800+ LeetCode problems with premium ones filtered out. 
+Each suggestion has its own reroll button.
+
+The review problem comes from **spaced repetition**: every solved problem is due again 1, 7, 
+30, then 90 days after I solve it, and the most overdue one in each topic gets surfaced. 
+Re-solving it on LeetCode automatically pushes it to the next, longer interval, since it's all 
+worked out from the submissions table. A review queue on the dashboard shows the most overdue 
+problems across every topic.
+
+A **weekly goal** adapts to my pace: 10% above my average over my last 4 active weeks, or half 
+my old pace when I'm coming back from a break.
+
+## Study Notes
+
+The Notes tab has a page for each of the 27 interview topics: the core idea, step through 
+diagrams of the algorithm running, commented Python templates, worked LeetCode examples, and a 
+practice list that checks off the problems I've already solved. Notes I haven't touched in over 
+a month show up under "Worth rereading", and every study card links to its topic's notes.
+
+Notes live in `dashboard/src/notes/content/<topic>.md`, and their diagrams in 
+`dashboard/src/notes/diagrams/<topic>.jsx`, built from a small SVG kit in 
+`dashboard/src/notes/kit/`. `python dashboard/scripts/check_notes.py` checks every note for 
+broken diagrams, invalid Python, and malformed practice lists.
 
 ---
 
@@ -81,6 +103,10 @@ LeetCode → Poller → Redis (queue) → Worker → PostgreSQL
 - Real-time submission tracking via LeetCode GraphQL API
 - Redis message queue decoupling poller from database writes
 - ML-powered topic recommendations, limited to interview topics, with tiered prioritization
+- Easy + Medium suggestions per topic, premium problems filtered out
+- Spaced repetition review queue (1, 7, 30, 90 days)
+- Adaptive weekly goal with a days-practiced tracker
+- Study notes for 27 interview topics with interactive diagrams
 - GitHub-style activity heatmap for the last 6 months
 - Interview readiness radar (progress toward 15 problems per core topic)
 - Per-topic breakdown with an interview-only / all-tags toggle
@@ -102,6 +128,9 @@ pip install -r requirements.txt
 # set up .env
 cp .env.example .env
 # fill in LEETCODE_SESSION, LEETCODE_CSRF, DB_*, REDIS_URL
+
+# fill the problems table (and premium flags) once; the scheduler re-syncs it weekly
+python -m ml.fetch_problems
 
 # start postgres and redis locally, then run
 python -m backend.worker        # terminal 1

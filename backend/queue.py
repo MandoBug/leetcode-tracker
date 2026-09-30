@@ -57,7 +57,7 @@ def set_cache(key, value, expiry=360):
     except redis.RedisError as e:
         print(f"cache write failed for {key}: {e}")
 
-# retrieves cached data, returns None if not found or expired (or if redis is unreachable — then we just hit postgres)
+# retrieves cached data, returns None if not found or expired (or if redis is unreachable, in which case we just hit postgres)
 def get_cache(key):
     try:
         item = r.get(key) #gets the value for a key from redis
