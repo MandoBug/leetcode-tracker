@@ -352,7 +352,7 @@
 .stepper-dots button.on { background: var(--accent); width: 16px; border-radius: 3px; }
 .stepper-caption { min-height: 44px; }
 .stepper-frames { display: grid; }
-.stepper-frames > div { grid-area: 1 / 1; visibility: hidden; }
+.stepper-frames > div { grid-area: 1 / 1; visibility: hidden; align-self: end; }  /* extra rows (brackets) grow upward, so arrays stay put */
 .stepper-frames > div.on { visibility: visible; }
 
 .missing {
