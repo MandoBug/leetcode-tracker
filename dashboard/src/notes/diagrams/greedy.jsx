@@ -3,7 +3,7 @@ import { ArrayViz, IntervalsViz, Figure, Stepper } from "../kit"
 export function GreedyFails() {
     return (
         <Figure
-            caption="Greedy isn't always right. Make 6 from coins [1, 3, 4]. 'Take the biggest coin that fits' grabs 4, then 1, then 1: three coins. The real best is 3 + 3: two coins. Taking the 4 felt best in the moment but ruled out the better answer. Coin Change needs DP; greedy only works when you can argue that the local choice never hurts."
+            caption="Greedy isn't always right. Make 6 from coins [1, 3, 4]. 'Take the biggest coin that fits' grabs 4, then 1, then 1: three coins. The real best is 3 + 3: two coins. Taking the 4 felt best in the moment but ruled out the better answer. Coin Change needs DP; greedy only works when I can argue that the local choice never hurts."
             legend={[{ s: "bad", label: "greedy: 3 coins" }, { s: "done", label: "optimal: 2 coins" }]}
         >
             <div style={{ width: "fit-content", margin: "0 auto" }}>
@@ -76,7 +76,7 @@ function jumpFrames() {
         const before = reach
         reach = Math.max(reach, i + nums[i])
         frames.push({
-            caption: `Index ${i} is reachable. From here you can jump up to ${nums[i]}, reaching ${i + nums[i]}. Farthest reach ${reach > before ? `grows to ${reach}` : `stays ${reach}`}.${reach >= nums.length - 1 ? " That covers the last index: True." : ""}`,
+            caption: `Index ${i} is reachable. From here I can jump up to ${nums[i]}, reaching ${i + nums[i]}. Farthest reach ${reach > before ? `grows to ${reach}` : `stays ${reach}`}.${reach >= nums.length - 1 ? " That covers the last index: True." : ""}`,
             view: (
                 <ArrayViz
                     items={nums}

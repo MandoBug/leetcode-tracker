@@ -115,7 +115,7 @@ function NotesHome({ stats }) {
     )
 }
 
-// highlights the section you're reading in the "on this page" list
+// highlights the section I'm reading in the "on this page" list
 function useActiveHeading(ids) {
     const [active, setActive] = useState(null)
     useEffect(() => {

@@ -17,7 +17,7 @@ export function Representations() {
     const ms = {}
     matrix.forEach((row, r) => row.forEach((v, c) => { if (v) ms[`${r},${c}`] = "active" }))
     return (
-        <Figure caption="One graph, three ways to write it down. Interview inputs usually arrive as an EDGE LIST; you almost always convert it to an ADJACENCY LIST (each node -> its neighbours), because that's what DFS and BFS want. An ADJACENCY MATRIX (1 = connected) is O(1) to check one pair but always costs V² memory.">
+        <Figure caption="One graph, three ways to write it down. Interview inputs usually arrive as an EDGE LIST; I almost always convert it to an ADJACENCY LIST (each node -> its neighbours), because that's what DFS and BFS want. An ADJACENCY MATRIX (1 = connected) is O(1) to check one pair but always costs V² memory.">
             <div className="fig-row">
                 <div><GraphViz nodes={nodes} edges={edges} unit={90} label="the graph" /><div className="fig-sub">the graph</div></div>
                 <div style={{ fontFamily: "var(--mono)", fontSize: 12.5, color: "var(--text-2)", lineHeight: 1.9 }}>

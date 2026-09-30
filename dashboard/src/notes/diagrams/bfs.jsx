@@ -88,7 +88,7 @@ export function Layers() {
     ]
     return (
         <Figure
-            caption="BFS from A visits the graph in rings: first everything 1 edge away, then 2, then 3. Nothing at distance 3 is touched until every distance 2 node is done, which is why the first time you reach a node is along a shortest path."
+            caption="BFS from A visits the graph in rings: first everything 1 edge away, then 2, then 3. Nothing at distance 3 is touched until every distance 2 node is done, which is why the first time BFS reaches a node is along a shortest path."
             legend={[{ s: "active", label: "start" }, { s: "found", label: "level 1" }, { s: "window", label: "level 2" }, { s: "done", label: "level 3" }]}
         >
             <GraphViz nodes={nodes} edges={edges} unit={110} label="bfs layers" />

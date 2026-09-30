@@ -15,7 +15,7 @@ export function Operators() {
 export function ClearLowest() {
     return (
         <Figure
-            caption="x & (x - 1) removes the lowest 1 bit. Subtracting 1 flips the lowest 1 to 0 and every 0 below it to 1. ANDing with the original wipes out exactly that block. Repeat until x is 0 and you've counted the 1 bits, one per loop (Number of 1 Bits). If x has only ONE 1 bit, the result is 0 immediately: that's the power of two check."
+            caption="x & (x - 1) removes the lowest 1 bit. Subtracting 1 flips the lowest 1 to 0 and every 0 below it to 1. ANDing with the original wipes out exactly that block. Repeat until x is 0 and I've counted the 1 bits, one per loop (Number of 1 Bits). If x has only ONE 1 bit, the result is 0 immediately: that's the power of two check."
             legend={[{ s: "bad", label: "the lowest 1 bit and everything below it" }]}
         >
             <BitsViz
