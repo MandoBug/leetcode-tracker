@@ -6,8 +6,11 @@ export function Svg({ width, height, label, children, align = "center" }) {
     return (
         <svg
             viewBox={`0 0 ${width} ${height}`}
-            width="100%"
-            style={{ maxWidth: width, display: "block", margin: align === "left" ? "0" : "0 auto", overflow: "visible" }}
+            // centered: fill the figure up to the natural width. left aligned rows sit inside a
+            // fit-content wrapper, where a % width would shrink each row by a different amount,
+            // so they use their natural pixel width and only scale down if the screen is too narrow
+            width={align === "left" ? width : "100%"}
+            style={{ maxWidth: align === "left" ? "100%" : width, display: "block", margin: align === "left" ? "0" : "0 auto", overflow: "visible" }}
             role="img"
             aria-label={label}
             fontFamily={MONO}
