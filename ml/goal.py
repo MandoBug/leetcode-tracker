@@ -18,7 +18,7 @@ def get_weekly_goal():
     conn = get_connection()
     cur = conn.cursor()
     # submitted_at is stored in UTC. AT TIME ZONE converts it: first tag it as UTC, then shift it to Pacific.
-    # date_trunc('week', ...) rounds a timestamp down to the Monday of its week
+    # the grouping into Monday-to-Sunday weeks happens in python below
     cur.execute("""
         SELECT title,
                (submitted_at AT TIME ZONE 'UTC' AT TIME ZONE %s) AS local_time
