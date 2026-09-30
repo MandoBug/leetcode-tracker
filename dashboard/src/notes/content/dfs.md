@@ -1,8 +1,8 @@
 ## The idea
 
-Depth-first search explores as far as it can down one path before backing up and trying the next. On a tree that's just the preorder walk. On a graph or grid you need one extra thing: a **visited** set, because unlike a tree, a graph can lead you back to where you've already been.
+Depth-first search explores as far as it can down one path before backing up and trying the next. On a tree that's just the preorder walk. On a graph or grid I need one extra thing: a **visited** set, because unlike a tree, a graph can lead me back to where I've already been.
 
-Use DFS when you need to **reach everything connected** to a starting point: count islands, find connected components, check if a path exists, copy a graph, or explore all possibilities (which is [backtracking](#/notes/backtracking)). If you need the **shortest** path in steps, use [BFS](#/notes/bfs) instead.
+Use DFS when I need to **reach everything connected** to a starting point: count islands, find connected components, check if a path exists, copy a graph, or explore all possibilities (which is [backtracking](#/notes/backtracking)). If I need the **shortest** path in steps, use [BFS](#/notes/bfs) instead.
 
 ## The graph template
 
@@ -20,7 +20,7 @@ def dfs(node, graph, visited):
 GraphOrder
 ```
 
-Most graph problems hand you edges, not an adjacency list. Build one first:
+Most graph problems hand me edges, not an adjacency list. Build one first:
 
 ```python
 from collections import defaultdict
@@ -32,7 +32,7 @@ for a, b in edges:
 
 ## Counting connected pieces
 
-Loop over every node. Each time you find one that isn't visited yet, you've found a new component; run DFS to mark all of it.
+Loop over every node. Each time I find one that isn't visited yet, I've found a new component; run DFS to mark all of it.
 
 ```python title="547. Number of Provinces"
 class Solution:
@@ -56,7 +56,7 @@ class Solution:
 
 ## DFS on a grid
 
-A grid is a graph where each cell connects to its 4 neighbours. You don't need to build the graph, just step with `(dr, dc)`. A common trick is to **mark visited cells in the grid itself** (like turning land into water) so no separate set is needed.
+A grid is a graph where each cell connects to its 4 neighbours. I don't need to build the graph, just step with `(dr, dc)`. A common trick is to **mark visited cells in the grid itself** (like turning land into water) so no separate set is needed.
 
 ```diagram
 Islands
@@ -139,7 +139,7 @@ def dfs_iterative(start, graph):
     return visited
 ```
 
-> **Tip:** On LeetCode you can also raise the limit with `sys.setrecursionlimit(10**6)`, but the stack version is the safer habit.
+> **Tip:** On LeetCode I can also raise the limit with `sys.setrecursionlimit(10**6)`, but the stack version is the safer habit.
 
 ## Copying a graph
 
@@ -173,7 +173,7 @@ Every node and edge is handled once: **O(V + E)** for graphs, **O(rows × cols)*
 200 | Number of Islands | number-of-islands | Medium | sink each island
 695 | Max Area of Island | max-area-of-island | Medium | DFS returns a size
 547 | Number of Provinces | number-of-provinces | Medium | components in a matrix
-841 | Keys and Rooms | keys-and-rooms | Medium | can you reach everything?
+841 | Keys and Rooms | keys-and-rooms | Medium | can I reach everything?
 133 | Clone Graph | clone-graph | Medium | dict of copies
 130 | Surrounded Regions | surrounded-regions | Medium | DFS from the border
 417 | Pacific Atlantic Water Flow | pacific-atlantic-water-flow | Medium | two border searches

@@ -7,7 +7,7 @@ Union-Find (also called a disjoint set union, or DSU) keeps track of which items
 
 Each group is stored as a tree where every node points to its parent, and the root points to itself. Two items are in the same group exactly when they have the same root.
 
-Use it when connections arrive **one at a time** and you keep asking "are these connected now?", or when you need to spot the edge that closes a cycle.
+Use it when connections arrive **one at a time** and I keep asking "are these connected now?", or when I need to spot the edge that closes a cycle.
 
 ```diagram
 Unions
@@ -134,7 +134,7 @@ class Solution:
 
 ## Union-Find or DFS?
 
-Both answer connectivity questions. Pick Union-Find when **edges arrive over time** and you query in between, when you need "which edge closed a cycle", or for Kruskal. Pick DFS/BFS when the graph is given all at once and you also need paths or distances.
+Both answer connectivity questions. Pick Union-Find when **edges arrive over time** and I query in between, when I need "which edge closed a cycle", or for Kruskal. Pick DFS/BFS when the graph is given all at once and I also need paths or distances.
 
 ## Practice
 
