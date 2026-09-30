@@ -82,7 +82,7 @@ class Solution:
 
 ## Trick 3: build from smaller numbers
 
-`i >> 1` is `i` with its last bit dropped, which is a smaller number you've already solved. That makes counting bits for every number a tiny DP.
+`i >> 1` is `i` with its last bit dropped, which is a smaller number I've already solved. That makes counting bits for every number a tiny DP.
 
 ```python title="338. Counting Bits"
 class Solution:
