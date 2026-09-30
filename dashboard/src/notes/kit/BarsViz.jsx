@@ -9,8 +9,9 @@ import { INK, state, hue } from "./colors"
  *   pointers  [{ i, label, color }] under the bars
  *   arrows    [{ from, to, color }] curved arrow from bar `from` to bar `to` ("next greater" links)
  *   band      { from, to, height, label } a see-through rectangle behind the bars (a container's water)
+ *   labels    text above each bar instead of the value (e.g. draw heights offset but show real temperatures)
  */
-export function BarsViz({ values, states = {}, water, pointers = [], arrows = [], band, unit = 22, barW = 30, label = "bars" }) {
+export function BarsViz({ values, states = {}, water, pointers = [], arrows = [], band, labels, unit = 22, barW = 30, label = "bars" }) {
     const n = values.length
     const gap = 8
     const pad = 14
@@ -35,7 +36,7 @@ export function BarsViz({ values, states = {}, water, pointers = [], arrows = []
                             <rect x={x(i)} y={base - h - wv} width={barW} height={wv} fill="rgba(124,180,255,0.28)" stroke={hue("blue")} strokeDasharray="3 3" strokeWidth={1} />
                         )}
                         <rect x={x(i)} y={base - h} width={barW} height={Math.max(h, 1)} rx={4} fill={states[i] ? s.fill : "#1f1f24"} stroke={states[i] ? s.stroke : "#34343b"} strokeWidth={1.25} />
-                        <text x={x(i) + barW / 2} y={base - h - wv - 8} fontSize={11} fill={states[i] ? s.stroke : INK.text2} textAnchor="middle">{v}</text>
+                        <text x={x(i) + barW / 2} y={base - h - wv - 8} fontSize={11} fill={states[i] ? s.stroke : INK.text2} textAnchor="middle">{labels ? labels[i] : v}</text>
                         <text x={x(i) + barW / 2} y={base + 12} fontSize={9.5} fill={INK.faint} textAnchor="middle">{i}</text>
                     </g>
                 )
