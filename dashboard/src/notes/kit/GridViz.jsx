@@ -1,6 +1,6 @@
 import { Svg, ArrowDefs } from "./Svg"
 import { useArrowBase, markerUrl } from "./arrows"
-import { INK, state, hue } from "./colors"
+import { INK, BACKING, state, hue } from "./colors"
 
 /**
  * a 2D grid, also used for DP tables.
@@ -35,15 +35,29 @@ export function GridViz({ grid, states = {}, rowHeaders, colHeaders, arrows = []
             {rowHeaders && rowHeaders.map((h, r) => (
                 <text key={r} x={pad + 12} y={cy(r)} fontSize={12} fill={INK.text3} textAnchor="middle" dominantBaseline="central">{h}</text>
             ))}
+            {/* three passes so the path line runs between the cell boxes and the text on top of it */}
             {grid.map((row, r) => row.map((v, c) => {
                 const s = state(states[`${r},${c}`])
                 return (
-                    <g key={`${r},${c}`}>
-                        <rect
-                            x={left + c * cell + 1.5} y={top + r * cell + 1.5}
-                            width={cell - 3} height={cell - 3} rx={6}
-                            fill={s.fill} stroke={s.stroke} strokeWidth={1.25}
-                        />
+                    <rect
+                        key={`${r},${c}`}
+                        x={left + c * cell + 1.5} y={top + r * cell + 1.5}
+                        width={cell - 3} height={cell - 3} rx={6}
+                        fill={s.fill} stroke={s.stroke} strokeWidth={1.25}
+                    />
+                )
+            }))}
+            {path && (
+                <polyline
+                    points={path.map(([r, c]) => `${cx(c)},${cy(r)}`).join(" ")}
+                    fill="none" stroke={hue("yellow")} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" opacity={0.55}
+                />
+            )}
+            {grid.map((row, r) => row.map((v, c) => {
+                const s = state(states[`${r},${c}`])
+                return (
+                    <g key={`t${r},${c}`}>
+                        {path && v !== "" && <rect x={cx(c) - 9} y={cy(r) - 8} width={18} height={16} rx={4} fill={BACKING} opacity={0.85} />}
                         <text x={cx(c)} y={cy(r)} fontSize={String(v).length > 2 ? 11 : 13} fill={s.text} textAnchor="middle" dominantBaseline="central">{v}</text>
                         {badges[`${r},${c}`] !== undefined && (
                             <text x={left + c * cell + cell - 6} y={top + r * cell + 9} fontSize={8.5} fill={INK.text3} textAnchor="end" dominantBaseline="central">
@@ -53,12 +67,6 @@ export function GridViz({ grid, states = {}, rowHeaders, colHeaders, arrows = []
                     </g>
                 )
             }))}
-            {path && (
-                <polyline
-                    points={path.map(([r, c]) => `${cx(c)},${cy(r)}`).join(" ")}
-                    fill="none" stroke={hue("yellow")} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" opacity={0.9}
-                />
-            )}
             {arrows.map((a, k) => {
                 const [r1, c1] = a.from
                 const [r2, c2] = a.to
