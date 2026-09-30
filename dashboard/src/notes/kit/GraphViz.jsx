@@ -76,7 +76,7 @@ export function GraphViz({ nodes, edges, directed = false, unit = 78, r: R = 18,
                             </g>
                         )}
                         {n.note && (
-                            <text x={x} y={y + R + 14} fontSize={10.5} fill={n.noteColor ? hue(n.noteColor) : INK.text3} textAnchor="middle">{n.note}</text>
+                            <Tag x={x} y={y + R + 12} text={n.note} color={n.noteColor ? hue(n.noteColor) : INK.text3} size={10.5} />
                         )}
                     </g>
                 )
