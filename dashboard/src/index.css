@@ -93,6 +93,13 @@ button { font: inherit; color: inherit; }
 }
 .wordmark span { color: var(--accent); }
 
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  min-width: 0;
+}
+
 .sync {
   display: flex;
   align-items: center;
