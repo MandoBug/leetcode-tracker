@@ -1,4 +1,4 @@
-import { Svg } from "./Svg"
+import { Svg, Tag } from "./Svg"
 import { INK, state, hue } from "./colors"
 
 /**
@@ -8,8 +8,9 @@ import { INK, state, hue } from "./colors"
  *   water     optional [0, 2, 0, ...] extra fill drawn on top of each bar (trapping rain water)
  *   pointers  [{ i, label, color }] under the bars
  *   arrows    [{ from, to, color }] curved arrow from bar `from` to bar `to` ("next greater" links)
+ *   band      { from, to, height, label } a see-through rectangle behind the bars (a container's water)
  */
-export function BarsViz({ values, states = {}, water, pointers = [], arrows = [], unit = 22, barW = 30, label = "bars" }) {
+export function BarsViz({ values, states = {}, water, pointers = [], arrows = [], band, unit = 22, barW = 30, label = "bars" }) {
     const n = values.length
     const gap = 8
     const pad = 14
@@ -39,6 +40,19 @@ export function BarsViz({ values, states = {}, water, pointers = [], arrows = []
                     </g>
                 )
             })}
+            {/* drawn after the bars: see-through, so the bars inside still show */}
+            {band && (
+                <g>
+                    <rect
+                        x={x(band.from) + barW} y={base - band.height * unit}
+                        width={x(band.to) - x(band.from) - barW} height={band.height * unit}
+                        fill="rgba(124,180,255,0.18)" stroke={hue("blue")} strokeDasharray="4 4" strokeWidth={1}
+                    />
+                    {band.label && (
+                        <Tag x={(x(band.from) + x(band.to) + barW) / 2} y={base - band.height * unit / 2} text={band.label} color="blue" />
+                    )}
+                </g>
+            )}
             {arrows.map((a, k) => {
                 const x1 = x(a.from) + barW / 2
                 const x2 = x(a.to) + barW / 2
