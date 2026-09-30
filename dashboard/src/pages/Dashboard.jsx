@@ -113,7 +113,7 @@ function Dashboard({ data, setRecommendations }) {
       </aside>
 
       <main className="content">
-        <Section title="This week">
+        <Section title="Today">
           <div className="grid-today">
             {/* focus = the top 3 topics from the recommender */}
             <WeeklyGoal goal={goal} focus={recommendations.slice(0, 3).map(r => r.topic)} />

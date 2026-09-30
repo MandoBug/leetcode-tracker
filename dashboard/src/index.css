@@ -491,6 +491,7 @@ button { font: inherit; color: inherit; }
 .grid-today {
   display: grid;
   grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  align-items: start;
   gap: 12px;
 }
 
@@ -535,10 +536,9 @@ button { font: inherit; color: inherit; }
   display: flex;
   align-items: center;
   gap: 10px;
-  margin-top: auto;
+  margin-top: 18px;
   padding-top: 16px;
   border-top: 1px solid var(--border);
-  margin-block-start: 18px;
 }
 .chips { display: flex; flex-wrap: wrap; gap: 6px; }
 .chip {

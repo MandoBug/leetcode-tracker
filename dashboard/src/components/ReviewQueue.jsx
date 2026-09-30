@@ -32,7 +32,7 @@ function ReviewQueue({ queue }) {
                                 </div>
                             </div>
                             <span className="queue-overdue">
-                                {p.overdue_days > 0 ? `${p.overdue_days}d late` : "due today"}
+                                {p.overdue_days > 0 ? `${p.overdue_days}d overdue` : "due today"}
                             </span>
                         </li>
                     ))}

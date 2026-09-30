@@ -30,7 +30,7 @@ function WeeklyGoal({ goal, focus }) {
         <div className="card goal-card">
             <div className="card-head">
                 <div>
-                    <h3 className="card-title">This week</h3>
+                    <h3 className="card-title">Weekly goal</h3>
                     <p className="card-sub">{goal.basis}</p>
                 </div>
             </div>
