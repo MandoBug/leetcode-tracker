@@ -459,6 +459,11 @@ button { font: inherit; color: inherit; }
 .rec-link.refresh { color: var(--link); }
 .rec-link.try { color: #4ade80; }
 .rec-empty { font-size: 13px; color: var(--text-3); }
+.rec-notes { color: var(--text-2); text-decoration: underline; text-decoration-color: var(--border-strong); text-underline-offset: 3px; }
+.rec-notes:hover { color: var(--link); text-decoration-color: var(--link); }
+.queue-topic { color: var(--text-2); }
+.queue-topic:hover { color: var(--link); }
+a.bar-label:hover { color: var(--link); }
 .rec-aux {
   font-family: var(--mono);
   font-size: 11px;

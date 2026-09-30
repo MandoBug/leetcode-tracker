@@ -1,4 +1,6 @@
 import { useState } from "react"
+import { to } from "../router"
+import { noteForTopic } from "../notes/catalog"
 
 // strength thresholds, in unique problems solved per topic
 const STRONG = 15
@@ -6,7 +8,7 @@ const DEVELOPING = 5
 
 const LEVELS = [
     { label: `strong (${STRONG}+)`, color: "var(--easy)" },
-    { label: `developing (${DEVELOPING}–${STRONG - 1})`, color: "var(--medium)" },
+    { label: `developing (${DEVELOPING} to ${STRONG - 1})`, color: "var(--medium)" },
     { label: `weak (<${DEVELOPING})`, color: "var(--hard)" },
 ]
 
@@ -50,7 +52,9 @@ function TopicChart({ topics }) {
                             className={`bar-row${t.count === 0 ? " zero" : ""}`}
                             title={`${t.topic}: ${t.count} problem${t.count === 1 ? "" : "s"} · ${level.label}`}
                         >
-                            <span className="bar-label">{t.topic}</span>
+                            {noteForTopic(t.topic)
+                                ? <a className="bar-label" href={to("notes", noteForTopic(t.topic).slug)}>{t.topic}</a>
+                                : <span className="bar-label">{t.topic}</span>}
                             <div className="bar-track">
                                 <div className="bar-fill" style={{ width: `${(t.count / max) * 100}%`, background: level.color }} />
                             </div>

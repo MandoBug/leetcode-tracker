@@ -1,3 +1,6 @@
+import { to } from "../router"
+import { noteForTopic } from "../notes/catalog"
+
 const lc = slug => `https://leetcode.com/problems/${slug}`
 
 const difficultyColor = {
@@ -28,7 +31,9 @@ function ReviewQueue({ queue }) {
                             <div className="queue-main">
                                 <a className="queue-title" href={lc(p.slug)} target="_blank" rel="noreferrer">{p.title}</a>
                                 <div className="queue-meta">
-                                    {p.topic} · solved on {p.solve_days} day{p.solve_days === 1 ? "" : "s"} · last {p.days_ago}d ago
+                                    {noteForTopic(p.topic)
+                                        ? <a className="queue-topic" href={to("notes", noteForTopic(p.topic).slug)}>{p.topic}</a>
+                                        : p.topic} · solved on {p.solve_days} day{p.solve_days === 1 ? "" : "s"} · last {p.days_ago}d ago
                                 </div>
                             </div>
                             <span className="queue-overdue">

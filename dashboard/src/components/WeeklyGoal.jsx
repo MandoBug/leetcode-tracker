@@ -1,3 +1,6 @@
+import { to } from "../router"
+import { noteForTopic } from "../notes/catalog"
+
 const DAYS = ["M", "T", "W", "T", "F", "S", "S"]
 
 // circular progress ring. the trick: a circle's stroke is drawn as a dash, and strokeDashoffset
@@ -65,7 +68,12 @@ function WeeklyGoal({ goal, focus }) {
                 <div className="goal-focus">
                     <span className="rec-label">Focus</span>
                     <div className="chips">
-                        {focus.map(t => <span key={t} className="chip">{t}</span>)}
+                        {focus.map(t => {
+                            const note = noteForTopic(t)
+                            return note
+                                ? <a key={t} className="chip" href={to("notes", note.slug)} title={`${t} notes`}>{t}</a>
+                                : <span key={t} className="chip">{t}</span>
+                        })}
                     </div>
                 </div>
             )}

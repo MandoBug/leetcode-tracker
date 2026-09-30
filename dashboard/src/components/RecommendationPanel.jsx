@@ -1,5 +1,7 @@
 import { useState } from "react"
 import { getJSON } from "../api"
+import { to } from "../router"
+import { noteForTopic } from "../notes/catalog"
 
 const lc = slug => `https://leetcode.com/problems/${slug}`
 
@@ -27,6 +29,7 @@ function RecommendationCard({ rec, rank, rerolling, onReroll }) {
         ? "never solved"
         : `${rec.count} solved · last ${rec.days_since_last}d ago`
     const refresh = rec.refresh_problem
+    const note = noteForTopic(rec.topic)
     const status = refresh && reviewStatus(refresh)
 
     return (
@@ -35,7 +38,10 @@ function RecommendationCard({ rec, rank, rerolling, onReroll }) {
                 <div>
                     <div className="rec-rank">{String(rank).padStart(2, "0")}</div>
                     <h3 className="rec-topic">{rec.topic}</h3>
-                    <p className="rec-meta">{meta}</p>
+                    <p className="rec-meta">
+                        {meta}
+                        {note && <> · <a className="rec-notes" href={to("notes", note.slug)}>read notes</a></>}
+                    </p>
                 </div>
                 <span className="pill">{rec.tier}</span>
             </div>
