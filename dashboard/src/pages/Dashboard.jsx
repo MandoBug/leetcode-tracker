@@ -5,6 +5,7 @@ import TopicRadar from "../components/RadarChart"
 import ActivityHeatmap from "../components/ActivityHeatmap"
 import ProgressChart from "../components/ProgressChart"
 import WeeklyGoal from "../components/WeeklyGoal"
+import ReviewQueue from "../components/ReviewQueue"
 
 const DIFFICULTIES = [
   { key: "Easy", color: "var(--easy)" },
@@ -61,7 +62,7 @@ function DifficultySplit({ counts, total }) {
 }
 
 function Dashboard({ data, setRecommendations }) {
-  const { submissions, topics, recommendations, activity, goal, loadedAt } = data
+  const { submissions, topics, recommendations, activity, goal, review, loadedAt } = data
 
   // unique problems by title, so re-solving the same problem doesn't inflate anything
   const uniqueProblems = new Map()
@@ -116,6 +117,7 @@ function Dashboard({ data, setRecommendations }) {
           <div className="grid-today">
             {/* focus = the top 3 topics from the recommender */}
             <WeeklyGoal goal={goal} focus={recommendations.slice(0, 3).map(r => r.topic)} />
+            <ReviewQueue queue={review} />
           </div>
         </Section>
 
