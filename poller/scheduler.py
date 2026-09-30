@@ -4,6 +4,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from apscheduler.schedulers.blocking import BlockingScheduler
 from poller.poller import fetch_submissions, fetch_problem_details
 from backend.queue import push_to_queue
+from backend.db import get_existing_ids
 
 # this is where we schedule the poller to run every hour, we use the apscheduler library to do this
 scheduler = BlockingScheduler()
@@ -14,12 +15,22 @@ def run_poller():
     #try catch to make sure any errors in the poller don't crash the scheduler, we want it to keep running even if there's an error
     try:
         submissions = fetch_submissions("oRMwArKAWa")
-        for submission in submissions:
+
+        # LC always sends back my last 20 accepted submissions, most of which we already saved on an earlier poll.
+        # skip those so we don't re-fetch their details (1 LC request each) and re-queue them for nothing
+        try:
+            existing = get_existing_ids([s["id"] for s in submissions])
+        except Exception as e:
+            print(f"couldn't check for existing submissions ({e}), queueing all of them")
+            existing = set() #the worker's ON CONFLICT DO NOTHING still prevents duplicates
+        new_submissions = [s for s in submissions if s["id"] not in existing]
+
+        for submission in new_submissions:
             details = fetch_problem_details(submission["titleSlug"])
             submission["difficulty"] = details["difficulty"]
             submission["topics"] = [tag["name"] for tag in details["topicTags"]]
             push_to_queue(submission)
-        print(f"queued {len(submissions)} submissions")
+        print(f"queued {len(new_submissions)} new submissions ({len(existing)} already saved)")
     except  Exception as e:
         print(f"poller error: {e}")
 
