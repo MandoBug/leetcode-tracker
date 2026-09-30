@@ -1,6 +1,6 @@
 ## The idea
 
-If you'll ask "what's the sum of this range?" many times, add everything up **once** ahead of time. A prefix sum array stores the running total, and then any range sum is one subtraction.
+If I'm going to ask "what's the sum of this range?" many times, add everything up **once** ahead of time. A prefix sum array stores the running total, and then any range sum is one subtraction.
 
 ```diagram
 RangeSum
@@ -54,7 +54,7 @@ class Solution:
         return total
 ```
 
-The same "remember prefixes in a dict" shape handles a family of problems. Only what you store changes:
+The same "remember prefixes in a dict" shape handles a family of problems. Only what I store changes:
 
 | Problem | Store | Ask at each step |
 |---|---|---|

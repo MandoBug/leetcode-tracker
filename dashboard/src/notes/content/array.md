@@ -25,7 +25,7 @@ Inserting in the middle is slow because every later element has to move over by 
 InsertShift
 ```
 
-> **Tip:** `pop(0)` is O(n) for the same reason. If you need to pop from the front a lot (like BFS), use `collections.deque`, which does it in O(1).
+> **Tip:** `pop(0)` is O(n) for the same reason. If I need to pop from the front a lot (like BFS), use `collections.deque`, which does it in O(1).
 
 ## Pattern 1: read pointer, write pointer
 
@@ -109,7 +109,7 @@ Storing the left products straight into `answer` and folding in the right produc
 
 ## Pattern 4: the index is a hash key
 
-If values fall in the range `1..n`, the array itself can act as a hash table: value `v` belongs at index `v - 1`. You can mark "I have seen v" by flipping the sign of `nums[v - 1]`, with no extra memory.
+If values fall in the range `1..n`, the array itself can act as a hash table: value `v` belongs at index `v - 1`. I can mark "I have seen v" by flipping the sign of `nums[v - 1]`, with no extra memory.
 
 ```python title="448. Find All Numbers Disappeared in an Array"
 class Solution:

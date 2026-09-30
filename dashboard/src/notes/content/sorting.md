@@ -1,6 +1,6 @@
 ## The idea
 
-In interviews you rarely write a sorting algorithm from scratch. What matters is noticing when **sorting first makes the rest of the problem easy**. After sorting:
+In interviews I rarely write a sorting algorithm from scratch. What matters is noticing when **sorting first makes the rest of the problem easy**. After sorting:
 
 - duplicates sit next to each other (skip them with `nums[i] == nums[i-1]`)
 - two pointers from both ends work (3Sum, pair sums)
@@ -21,7 +21,7 @@ people.sort(key=lambda p: (-p[0], p[1]))   # height descending, then k ascending
 words.sort(key=len)                   # by length
 ```
 
-Python's sort is **stable**: items that compare equal keep their original order. That lets you sort by several keys, either with a tuple key or by sorting twice (least important key first).
+Python's sort is **stable**: items that compare equal keep their original order. That lets me sort by several keys, either with a tuple key or by sorting twice (least important key first).
 
 When the order depends on comparing two items directly, use `cmp_to_key`:
 
@@ -88,7 +88,7 @@ Quicksort picks a **pivot** and rearranges the array so everything smaller is on
 Partition
 ```
 
-You don't need the whole array sorted to find the k-th largest element. Partition once, see which side the answer is on, and only recurse into that side. That's **quickselect**, O(n) on average.
+I don't need the whole array sorted to find the k-th largest element. Partition once, see which side the answer is on, and only recurse into that side. That's **quickselect**, O(n) on average.
 
 ```python title="215. Kth Largest Element in an Array"
 import random
@@ -123,7 +123,7 @@ A heap of size k also works in O(n log k) and is easier to get right under press
 
 ## Counting instead of comparing
 
-When values come from a tiny range, you can skip comparisons entirely. Sort Colors has only 0, 1, and 2, and the one pass version keeps three regions:
+When values come from a tiny range, I can skip comparisons entirely. Sort Colors has only 0, 1, and 2, and the one pass version keeps three regions:
 
 ```diagram
 DutchFlag
