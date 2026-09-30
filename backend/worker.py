@@ -19,7 +19,7 @@ def process_queue():
         try:
             submission = pop_from_queue(timeout=POP_TIMEOUT) #waits up to POP_TIMEOUT seconds for a submission
         except redis.RedisError as e:
-            print(f"redis error: {e} — retrying in {backoff}s")
+            print(f"redis error: {e}, retrying in {backoff}s")
             time.sleep(backoff)
             backoff = min(backoff * 2, MAX_BACKOFF)
             continue
@@ -33,11 +33,11 @@ def process_queue():
             print(f"processed: {submission['title']}")
             backoff = 1
         except psycopg2.Error as e:
-            print(f"database error on {submission['title']}: {e} — putting it back, retrying in {backoff}s")
+            print(f"database error on {submission['title']}: {e}, putting it back, retrying in {backoff}s")
             try:
                 requeue(submission) #put it back so it isn't lost
             except redis.RedisError:
-                # both services down at once — the scheduler will pick this submission up again on its next poll
+                # both services down at once: the scheduler will pick this submission up again on its next poll
                 print(f"couldn't requeue {submission['title']}, the next poll will re-fetch it")
             time.sleep(backoff)
             backoff = min(backoff * 2, MAX_BACKOFF)

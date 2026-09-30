@@ -9,7 +9,7 @@ import {
 } from "recharts"
 
 // the 12 axes on the radar (short labels so they fit around the circle).
-// keys are LeetCode's tag names — LC renamed "Graph" to "Graph Theory", which is why the old Graph axis sat at ~0
+// keys are LeetCode's tag names. LC renamed "Graph" to "Graph Theory", which is why the old Graph axis sat at ~0
 const CORE_TOPICS = [
     ["Array", "Array"],
     ["Hash Table", "Hash Table"],
@@ -26,7 +26,7 @@ const CORE_TOPICS = [
 ]
 
 // how many unique problems in a topic counts as "interview ready" (same as "strong" in TopicChart).
-// each axis shows progress toward this target instead of the raw count — with raw counts, Array (60+)
+// each axis shows progress toward this target instead of the raw count. With raw counts, Array (60+)
 // squashes every other axis into the middle and the shape tells you nothing
 const TARGET = 15
 

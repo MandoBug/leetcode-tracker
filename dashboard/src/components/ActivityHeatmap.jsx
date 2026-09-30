@@ -13,7 +13,7 @@ function ActivityHeatmap({ activity, now }) {
     const [hovered, setHovered] = useState(null)
     const scrollRef = useRef(null)
 
-    // on narrow screens the grid scrolls sideways — start scrolled to the right so the most recent weeks are visible
+    // on narrow screens the grid scrolls sideways, so start scrolled to the right so the most recent weeks are visible
     useEffect(() => {
         const el = scrollRef.current
         if (el) el.scrollLeft = el.scrollWidth
@@ -31,7 +31,7 @@ function ActivityHeatmap({ activity, now }) {
     start.setDate(start.getDate() - (WEEKS * 7 - 1))
 
     const days = []
-    const months = [] // [{ week, label }] — a label wherever a new month starts
+    const months = [] // [{ week, label }]: a label wherever a new month starts
     for (let i = 0; i < WEEKS * 7; i++) {
         const d = new Date(start)
         d.setDate(start.getDate() + i)

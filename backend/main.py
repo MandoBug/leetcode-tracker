@@ -67,7 +67,7 @@ def get_submissions():
             "title": row[1],
             "difficulty": row[2],
             "topics": row[3],
-            # ISO format ("2026-03-26T21:19:40Z") instead of str() ("2026-03-26 21:19:40") — Safari can't parse the space version,
+            # ISO format ("2026-03-26T21:19:40Z") instead of str() ("2026-03-26 21:19:40"). Safari can't parse the space version,
             # and the Z tells the browser it's UTC so it converts to my local time correctly
             "submitted_at": row[4].isoformat() + "Z",
             "status": row[5],

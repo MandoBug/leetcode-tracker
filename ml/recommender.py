@@ -50,7 +50,7 @@ def get_topic_stats():
     }
     
     # interview topics I've never touched don't show up in the query at all (there are no rows to group),
-    # so we add them with zeros — these are exactly the gaps the recommender should surface
+    # so we add them with zeros. These are exactly the gaps the recommender should surface
     for topic in INTERVIEW_TOPICS:
         if topic not in stats:
             stats[topic] = {
@@ -82,7 +82,7 @@ def calculate_difficulty_weight(easy, medium, hard):
 def calculate_recency_weight(last_seen):
     """higher weight the longer its been since you touched a topic"""
     if last_seen is None:
-        # never touched — treat it like it's been a full year, the most stale a topic can reasonably be
+        # never touched: treat it like it's been a full year, the most stale a topic can reasonably be
         # (this used to be 2.0, which was actually LOWER than a topic I did a week ago: log(8) + 1 ≈ 3.1)
         return math.log(365 + 1) + 1
     now = datetime.now(timezone.utc)
@@ -170,7 +170,7 @@ def get_recommendations():
     recommendations.sort(key=lambda x: x["priority_score"], reverse=True)
     recommendations = recommendations[:10]
     
-    # get problem suggestions — only for the top 10 now.
+    # get problem suggestions, only for the top 10 now.
     # before, we fetched problems for EVERY topic and then threw most of them away,
     # which was 2 database connections per topic (100+ for 50 topics) on every cache miss
     # spaced repetition state for every solved problem, fetched once and shared by all 10 topics (see ml/review.py)
