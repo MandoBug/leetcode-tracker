@@ -4,6 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.db import get_connection, ensure_schema
 from backend.queue import get_cache, set_cache
 from ml.recommender import get_recommendations
+from ml.review import get_review_queue
 from ml.topics import INTERVIEW_TOPICS
 
 # lifespan runs the code before `yield` once when the server boots (and anything after it on shutdown).
@@ -138,6 +139,16 @@ def recommendations():
     set_cache("recommendations", recs, 660) #cache the recommendations for 6 minutes, since they are a bit more expensive to generate than just a simple query, we want to cache them to improve performance and reduce load on the database
     
     return recs #return the recommendations as a JSON response to the frontend
+
+# the most overdue problems to re-solve, based on spaced repetition (see ml/review.py)
+@app.get("/review")
+def review_queue():
+    cached = get_cache("review")
+    if cached:
+        return cached
+    queue = get_review_queue()
+    set_cache("review", queue)
+    return queue
 
 @app.get("/recommendations/refresh")
 def refresh_problem(topic: str, difficulty: str | None = None):

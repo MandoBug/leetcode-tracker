@@ -2,6 +2,7 @@ import math
 from datetime import datetime, timezone
 from backend.db import get_connection
 from ml.topics import INTERVIEW_TOPICS
+from ml.review import get_review_items, pick_refresh
 
 #first we need to pull the stats for each topic
 def get_topic_stats():
@@ -115,24 +116,6 @@ def get_new_problem(topic, exclude_titles, difficulty=None):
     conn.close()
     return {"title": row[0], "slug": row[1], "difficulty": row[2]} if row else None
 
-#Now we fetch oldest problems for a topic, which are the ones I should be refreshing on
-def get_oldest_problem(topic):
-    conn = get_connection()
-    cur = conn.cursor()
-    cur.execute("""
-        SELECT title, title_slug, submitted_at FROM submissions
-        WHERE %s = ANY(topics)
-        ORDER BY submitted_at ASC
-        LIMIT 1
-    """, (topic,))
-    row = cur.fetchone()
-    cur.close()
-    conn.close()
-    if row:
-        days_ago = (datetime.now(timezone.utc) - row[2].replace(tzinfo=timezone.utc)).days
-        return {"title": row[0], "slug": row[1], "days_ago": days_ago}
-    return None
-
 # finally we can put it all together in a function that gets the stats, calculates scores, 
 # and returns tiered recommendations with problem suggestions
 def get_recommendations():
@@ -190,12 +173,15 @@ def get_recommendations():
     # get problem suggestions — only for the top 10 now.
     # before, we fetched problems for EVERY topic and then threw most of them away,
     # which was 2 database connections per topic (100+ for 50 topics) on every cache miss
+    # spaced repetition state for every solved problem, fetched once and shared by all 10 topics (see ml/review.py)
+    review_items = get_review_items()
     for rec in recommendations:
+        # the most overdue problem in this topic, instead of just the oldest one
+        rec["refresh_problem"] = pick_refresh(review_items, rec["topic"])
         # one pick per difficulty, e.g. {"Easy": {...}, "Medium": {...}}
         rec["new_problems"] = {
             d: get_new_problem(rec["topic"], solved_titles, d) for d in SUGGESTION_DIFFICULTIES
         }
-        rec["refresh_problem"] = get_oldest_problem(rec["topic"])
     
     return recommendations
 
@@ -206,7 +192,8 @@ if __name__ == "__main__":
         print(f"\n{r['topic']} | score: {r['priority_score']} | {r['tier']}")
         print(f"  solved {r['count']} problems | last: {r['days_since_last']} days ago")
         if r['refresh_problem']:
-            print(f"  refresh: {r['refresh_problem']['title']} ({r['refresh_problem']['days_ago']} days ago)")
+            rp = r['refresh_problem']
+            print(f"  refresh: {rp['title']} (solved {rp['days_ago']} days ago, review every {rp['interval']}d)")
         for d, p in r['new_problems'].items():
             if p:
                 print(f"  try ({d}): {p['title']}")
@@ -218,4 +205,5 @@ if __name__ == "__main__":
 # how long it's been since I last did it, and the difficulty breakdown of the problems I've done in that topic,
 # then we assign a tier based on how long it's been since I last did it and how
 # many times I've done it, then we sort the topics by priority score and keep the top 10,
-# and finally we get an Easy and a Medium problem to try (never premium) and an old problem to refresh on for each of those 10.
+# and finally we get an Easy and a Medium problem to try (never premium) and the most overdue problem to review
+# (spaced repetition, see ml/review.py) for each of those 10.
