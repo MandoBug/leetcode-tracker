@@ -1,11 +1,19 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from backend.db import get_connection
+from backend.db import get_connection, ensure_schema
 from backend.queue import get_cache, set_cache
 from ml.recommender import get_recommendations
 from ml.topics import INTERVIEW_TOPICS
 
-app = FastAPI() #this is our FastAPI app, which will handle the API requests from the frontend and interact with the database and queue
+# lifespan runs the code before `yield` once when the server boots (and anything after it on shutdown).
+# on boot we add any missing columns, see ensure_schema in db.py
+@asynccontextmanager
+async def lifespan(app):
+    ensure_schema()
+    yield
+
+app = FastAPI(lifespan=lifespan) #this is our FastAPI app, which will handle the API requests from the frontend and interact with the database and queue
 
 # this allows my React dashboard to talk to FastAPI
 # without this the browser blocks requests from different origins
