@@ -5,6 +5,7 @@ from backend.db import get_connection, ensure_schema
 from backend.queue import get_cache, set_cache
 from ml.recommender import get_recommendations
 from ml.review import get_review_queue
+from ml.goal import get_weekly_goal
 from ml.topics import INTERVIEW_TOPICS
 
 # lifespan runs the code before `yield` once when the server boots (and anything after it on shutdown).
@@ -149,6 +150,16 @@ def review_queue():
     queue = get_review_queue()
     set_cache("review", queue)
     return queue
+
+# this week's adaptive goal and progress (see ml/goal.py)
+@app.get("/goal")
+def weekly_goal():
+    cached = get_cache("goal")
+    if cached:
+        return cached
+    goal = get_weekly_goal()
+    set_cache("goal", goal, 120) #short cache so a fresh solve shows up quickly
+    return goal
 
 @app.get("/recommendations/refresh")
 def refresh_problem(topic: str, difficulty: str | None = None):
