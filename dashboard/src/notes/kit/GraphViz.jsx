@@ -1,16 +1,15 @@
 import { Svg, Tag, ArrowDefs } from "./Svg"
 import { useArrowBase, markerUrl } from "./arrows"
-import { INK, state, hue } from "./colors"
-
-const R = 18
+import { INK, BACKING, state, hue } from "./colors"
 
 /**
  * a graph drawn from explicit coordinates (in "grid units", scaled by `unit`).
  *   nodes  [{ id, x, y, s, note, badge }]   id is also the text shown unless `v` is given
  *   edges  [{ a, b, s, label, dir }]        dir: true draws an arrow a -> b (defaults to the graph's `directed`)
  *   curve  on an edge bends it, handy when a -> b and b -> a both exist
+ *   r      node radius, raise it for longer labels
  */
-export function GraphViz({ nodes, edges, directed = false, unit = 78, label = "graph" }) {
+export function GraphViz({ nodes, edges, directed = false, unit = 78, r: R = 18, label = "graph" }) {
     const byId = Object.fromEntries(nodes.map(n => [n.id, n]))
     const colors = [...new Set(["line", ...edges.map(e => (e.s ? state(e.s).stroke : "line"))])]
     const arrowColors = colors.map(c => (c === "line" ? INK.text3 : c))
@@ -67,6 +66,7 @@ export function GraphViz({ nodes, edges, directed = false, unit = 78, label = "g
                 const s = state(n.s)
                 return (
                     <g key={n.id}>
+                        <circle cx={x} cy={y} r={R} fill={BACKING} />
                         <circle cx={x} cy={y} r={R} fill={n.s ? s.fill : "#141417"} stroke={s.stroke} strokeWidth={1.75} />
                         <text x={x} y={y} fontSize={13} fill={s.text} textAnchor="middle" dominantBaseline="central">{n.v ?? n.id}</text>
                         {n.badge !== undefined && (

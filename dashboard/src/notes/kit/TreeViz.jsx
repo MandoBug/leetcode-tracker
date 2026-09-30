@@ -1,5 +1,5 @@
 import { Svg, Tag } from "./Svg"
-import { INK, state, hue } from "./colors"
+import { INK, BACKING, state, hue } from "./colors"
 
 /**
  * tree node shape used by every tree diagram:
@@ -89,6 +89,8 @@ export function TreeViz({ root, binary = true, dx = 50, dy = 66, label = "tree",
                 const w = nodeWidth(node.v)
                 return (
                     <g key={k}>
+                        {/* opaque backing first, so edge lines never show through the tinted fill */}
+                        <rect x={X(px) - w / 2} y={Y(py) - 17} width={w} height={34} rx={17} fill={BACKING} />
                         <rect
                             x={X(px) - w / 2} y={Y(py) - 17} width={w} height={34} rx={17}
                             fill={node.s ? s.fill : "#141417"} stroke={s.stroke} strokeWidth={1.75}

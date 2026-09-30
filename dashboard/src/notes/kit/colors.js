@@ -43,5 +43,8 @@ export const state = s => STATE[s] || STATE.default
 // a named color for lines/labels: accepts "blue", "green", ... or any hex
 export const hue = c => HUE[c] || c || INK.text2
 
+// the figure background, drawn under see-through shapes so lines behind them are hidden
+export const BACKING = "#0e0e10"
+
 export const MONO = "'DM Mono', ui-monospace, Menlo, monospace"
 export const SANS = "'DM Sans', system-ui, sans-serif"
