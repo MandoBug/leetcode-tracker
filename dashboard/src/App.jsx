@@ -15,10 +15,11 @@ function App() {
       getJSON("/topics"),
       getJSON("/recommendations"),
       getJSON("/activity"),
+      getJSON("/goal"),
     ])
-      .then(([submissions, topics, recommendations, activity]) =>
+      .then(([submissions, topics, recommendations, activity, goal]) =>
         // loadedAt = "now" for the charts, captured once here instead of calling Date.now() while rendering
-        setData({ submissions, topics, recommendations, activity, loadedAt: Date.now() }))
+        setData({ submissions, topics, recommendations, activity, goal, loadedAt: Date.now() }))
       .catch(err => setError(err))
   }, [])
 

@@ -4,6 +4,7 @@ import RecommendationPanel from "../components/RecommendationPanel"
 import TopicRadar from "../components/RadarChart"
 import ActivityHeatmap from "../components/ActivityHeatmap"
 import ProgressChart from "../components/ProgressChart"
+import WeeklyGoal from "../components/WeeklyGoal"
 
 const DIFFICULTIES = [
   { key: "Easy", color: "var(--easy)" },
@@ -60,7 +61,7 @@ function DifficultySplit({ counts, total }) {
 }
 
 function Dashboard({ data, setRecommendations }) {
-  const { submissions, topics, recommendations, activity, loadedAt } = data
+  const { submissions, topics, recommendations, activity, goal, loadedAt } = data
 
   // unique problems by title, so re-solving the same problem doesn't inflate anything
   const uniqueProblems = new Map()
@@ -111,6 +112,13 @@ function Dashboard({ data, setRecommendations }) {
       </aside>
 
       <main className="content">
+        <Section title="This week">
+          <div className="grid-today">
+            {/* focus = the top 3 topics from the recommender */}
+            <WeeklyGoal goal={goal} focus={recommendations.slice(0, 3).map(r => r.topic)} />
+          </div>
+        </Section>
+
         <Section
           title="What to study next"
           sub="Interview topics ranked by how few problems I've done, how long it's been, and how easy they were."

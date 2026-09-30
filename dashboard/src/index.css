@@ -487,6 +487,72 @@ button { font: inherit; color: inherit; }
 .icon-btn.spinning svg { animation: spin 0.8s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
+/* ---------- this week ---------- */
+.grid-today {
+  display: grid;
+  grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+  gap: 12px;
+}
+
+.goal-card { display: flex; flex-direction: column; }
+.goal-body {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+.ring-wrap { position: relative; flex-shrink: 0; }
+.ring circle:last-child { transition: stroke-dashoffset 0.6s ease; }
+.ring-label {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-content: center;
+  text-align: center;
+  line-height: 1.1;
+}
+.ring-label strong { font-size: 24px; font-weight: 600; }
+.ring-label span { font-size: 11px; color: var(--text-3); }
+.goal-headline { font-size: 14px; font-weight: 500; }
+.goal-days {
+  display: flex;
+  gap: 6px;
+  margin-top: 12px;
+}
+.goal-day {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-family: var(--mono);
+  color: var(--text-3);
+  background: var(--surface-2);
+}
+.goal-day.on { background: color-mix(in srgb, var(--accent) 22%, transparent); color: var(--accent); }
+.goal-day.today { box-shadow: 0 0 0 1px var(--text-3); }
+.goal-focus {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  margin-block-start: 18px;
+}
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--border-strong);
+  font-size: 12px;
+  color: var(--text-2);
+}
+a.chip:hover { color: var(--text); border-color: #3a3a40; }
+
 /* ---------- topic charts ---------- */
 .grid-topics {
   display: grid;
@@ -663,7 +729,8 @@ button { font: inherit; color: inherit; }
 
 /* ---------- responsive ---------- */
 @media (max-width: 1280px) {
-  .grid-topics { grid-template-columns: minmax(0, 1fr); }
+  .grid-topics,
+  .grid-today { grid-template-columns: minmax(0, 1fr); }
 }
 
 @media (max-width: 1100px) {
