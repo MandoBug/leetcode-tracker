@@ -26,13 +26,14 @@ queue one at a time and writes to PostgreSQL. The FastAPI backend serves everyth
 the React dashboard via cached endpoints, with Redis handling both the queue and the 
 read cache so the database never gets hammered.
 
-The ML recommendation engine sits on top of PostgreSQL and scores every topic I've 
-practiced using three weighted factors:
+The ML recommendation engine sits on top of PostgreSQL and scores every interview topic 
+(a fixed list of 27 in `ml/topics.py` — niche tags like Randomized or Game Theory are ignored) 
+using three weighted factors:
 ```
 priority_score = (1 / (count + 1)) * recency_weight * difficulty_weight
 ```
 
-- **Count** — how many problems I've done in this topic (Laplace smoothed so zero-count 
+- **Count** — how many unique problems I've done in this topic (Laplace smoothed so zero-count 
   topics don't divide by zero and naturally float to the top)
 - **Recency** — how long since I last touched the topic, on a log scale so a 100-day gap 
   doesn't completely dominate a 30-day gap
@@ -79,13 +80,15 @@ LeetCode → Poller → Redis (queue) → Worker → PostgreSQL
 
 - Real-time submission tracking via LeetCode GraphQL API
 - Redis message queue decoupling poller from database writes
-- ML-powered topic recommendations with three-tier prioritization
+- ML-powered topic recommendations, limited to interview topics, with tiered prioritization
 - GitHub-style activity heatmap for the last 6 months
-- Topic radar chart showing strength across core interview topics
+- Interview readiness radar (progress toward 15 problems per core topic)
+- Per-topic breakdown with an interview-only / all-tags toggle
 - Cumulative progress line chart
 - Reroll button for new problem suggestions
 - Redis read cache on all endpoints for fast dashboard loads
-- Auto-polling every 10 minutes via APScheduler
+- Auto-polling every 10 minutes via APScheduler, skipping submissions that are already saved
+- Worker survives Redis/Postgres drops with exponential backoff instead of crashing
 
 ---
 

@@ -1,133 +1,100 @@
 import { useState } from "react"
+import { getJSON } from "../api"
 
-const tierColors = {
-    "Been a while": "#ef4444",
-    "Keep practicing": "#eab308",
-    "Developing": "#22c55e"
+const lc = slug => `https://leetcode.com/problems/${slug}`
+
+function RerollIcon() {
+    return (
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M13.5 8a5.5 5.5 0 1 1-1.6-3.9" />
+            <path d="M13.5 2.5v3h-3" />
+        </svg>
+    )
 }
 
-function RecommendationCard({ rec, onRefresh }) {
+function RecommendationCard({ rec, rank, rerolling, onReroll }) {
+    const meta = rec.count === 0
+        ? "never solved"
+        : `${rec.count} solved · last ${rec.days_since_last}d ago`
+
     return (
-        <div style={{
-            borderLeft: `2px solid ${tierColors[rec.tier] || "#222"}`,
-            paddingLeft: "1rem",
-            marginBottom: "1.25rem",
-        }}>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "0.5rem" }}>
+        <article className="rec-card" data-tier={rec.tier}>
+            <div className="rec-top">
                 <div>
-                    <span style={{
-                        fontSize: "14px",
-                        fontWeight: "600",
-                        color: "#e8e8e8",
-                        marginRight: "0.5rem"
-                    }}>
-                        {rec.topic}
-                    </span>
-                    <span style={{
-                        fontSize: "12px",
-                        color: tierColors[rec.tier],
-                        fontFamily: "'DM Mono', monospace",
-                        letterSpacing: "0.06em",
-                        textTransform: "uppercase"
-                    }}>
-                        {rec.tier}
-                    </span>
+                    <div className="rec-rank">{String(rank).padStart(2, "0")}</div>
+                    <h3 className="rec-topic">{rec.topic}</h3>
+                    <p className="rec-meta">{meta}</p>
                 </div>
-                <span style={{
-                    fontSize: "12px",
-                    color: "#333",
-                    fontFamily: "'DM Mono', monospace"
-                }}>
-                    {rec.count} solved · {rec.days_since_last}d ago
-                </span>
+                <span className="pill">{rec.tier}</span>
             </div>
 
-            <div style={{ display: "flex", flexDirection: "column", gap: "0.35rem" }}>
-                {rec.refresh_problem && (
-                    <div style={{ fontSize: "12px", color: "#555" }}>
-                        <span style={{ color: "#333", marginRight: "0.4rem", fontFamily: "'DM Mono', monospace", fontSize: "12px" }}>REFRESH</span>
-                        <a
-                            href={`https://leetcode.com/problems/${rec.refresh_problem.slug}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            style={{ color: "#60a5fa", textDecoration: "none" }}
-                        >
+            <div className="rec-rows">
+                <div className="rec-row">
+                    <span className="rec-label">Refresh</span>
+                    {rec.refresh_problem ? (
+                        <a className="rec-link refresh" href={lc(rec.refresh_problem.slug)} target="_blank" rel="noreferrer">
                             {rec.refresh_problem.title}
                         </a>
-                        <span style={{ color: "#2a2a2a", marginLeft: "0.4rem", fontFamily: "'DM Mono', monospace", fontSize: "12px" }}>
-                            {rec.refresh_problem.days_ago}d ago
-                        </span>
-                    </div>
-                )}
+                    ) : (
+                        <span className="rec-empty">nothing to refresh yet</span>
+                    )}
+                    {rec.refresh_problem && <span className="rec-aux">{rec.refresh_problem.days_ago}d</span>}
+                </div>
 
-                {rec.new_problem && (
-                    <div style={{ fontSize: "12px", display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                        <span style={{ color: "#333", fontFamily: "'DM Mono', monospace", fontSize: "12px" }}>TRY</span>
-                        <a
-                            href={`https://leetcode.com/problems/${rec.new_problem.slug}`}
-                            target="_blank"
-                            rel="noreferrer"
-                            style={{ color: "#34d399", textDecoration: "none" }}
-                        >
+                <div className="rec-row">
+                    <span className="rec-label">Try</span>
+                    {rec.new_problem ? (
+                        <a className="rec-link try" href={lc(rec.new_problem.slug)} target="_blank" rel="noreferrer">
                             {rec.new_problem.title}
                         </a>
-                        <button
-                            onClick={() => onRefresh(rec.topic)}
-                            style={{
-                                background: "transparent",
-                                border: "1px solid #1f1f1f",
-                                borderRadius: "4px",
-                                color: "#444",
-                                cursor: "pointer",
-                                fontSize: "10px",
-                                padding: "2px 7px",
-                                fontFamily: "'DM Mono', monospace",
-                                letterSpacing: "0.04em"
-                            }}
-                        >
-                            reroll
-                        </button>
-                    </div>
-                )}
+                    ) : (
+                        <span className="rec-empty">no unseen problems left</span>
+                    )}
+                    <button
+                        className={`icon-btn${rerolling ? " spinning" : ""}`}
+                        onClick={() => onReroll(rec.topic)}
+                        disabled={rerolling}
+                        aria-label={`Suggest a different ${rec.topic} problem`}
+                        title="Reroll"
+                    >
+                        <RerollIcon />
+                    </button>
+                </div>
             </div>
-        </div>
+        </article>
     )
 }
 
 function RecommendationPanel({ recommendations, setRecommendations }) {
-    const [loading, setLoading] = useState(false)
+    // which topics are currently rerolling, so only that card's button spins
+    const [rerolling, setRerolling] = useState(new Set())
 
-    const handleRefresh = async (topic) => {
-        setLoading(true)
+    const handleReroll = async (topic) => {
+        setRerolling(prev => new Set(prev).add(topic))
         try {
-            const res = await fetch(`https://web-production-804c4.up.railway.app/recommendations/refresh?topic=${encodeURIComponent(topic)}`)
-            const data = await res.json()
+            const data = await getJSON(`/recommendations/refresh?topic=${encodeURIComponent(topic)}`)
             setRecommendations(prev =>
                 prev.map(r => r.topic === topic ? { ...r, new_problem: data } : r)
             )
         } catch (err) {
-            console.error("refresh failed", err)
+            console.error("reroll failed", err)
         }
-        setLoading(false)
+        setRerolling(prev => {
+            const next = new Set(prev)
+            next.delete(topic)
+            return next
+        })
     }
 
     return (
-        <div>
-            {loading && (
-                <p style={{
-                    fontSize: "11px",
-                    color: "#444",
-                    fontFamily: "'DM Mono', monospace",
-                    marginBottom: "1rem"
-                }}>
-                    finding problem...
-                </p>
-            )}
-            {recommendations.map(rec => (
+        <div className="rec-grid">
+            {recommendations.map((rec, i) => (
                 <RecommendationCard
                     key={rec.topic}
                     rec={rec}
-                    onRefresh={handleRefresh}
+                    rank={i + 1}
+                    rerolling={rerolling.has(rec.topic)}
+                    onReroll={handleReroll}
                 />
             ))}
         </div>

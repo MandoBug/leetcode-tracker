@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from backend.db import get_connection
 from backend.queue import get_cache, set_cache
 from ml.recommender import get_recommendations
+from ml.topics import INTERVIEW_TOPICS
 
 app = FastAPI() #this is our FastAPI app, which will handle the API requests from the frontend and interact with the database and queue
 
@@ -41,7 +42,7 @@ def get_submissions():
     conn = get_connection() #get a connection to the database
     cur = conn.cursor() #create a cursor to execute queries
     cur.execute("""
-        SELECT id, title, difficulty, topics, submitted_at, status, language
+        SELECT id, title, difficulty, topics, submitted_at, status, language, title_slug
         FROM submissions
         ORDER BY submitted_at DESC
     """) #execute a query to get the submissions from the database, ordered by submission time
@@ -56,9 +57,12 @@ def get_submissions():
             "title": row[1],
             "difficulty": row[2],
             "topics": row[3],
-            "submitted_at": str(row[4]), #convert the timestamp to a string so it's easier to work with in the frontend, we can convert it back to a date object in JS if we want to
+            # ISO format ("2026-03-26T21:19:40Z") instead of str() ("2026-03-26 21:19:40") — Safari can't parse the space version,
+            # and the Z tells the browser it's UTC so it converts to my local time correctly
+            "submitted_at": row[4].isoformat() + "Z",
             "status": row[5],
-            "language": row[6]
+            "language": row[6],
+            "title_slug": row[7] #so the dashboard can link each recent submission to its problem
         }
         for row in rows
     ]
@@ -82,10 +86,12 @@ def get_topics():
     # unnest is a postgres function that takes an array and turns it into a set of rows, 
     # so we can group by the individual topics even though they are stored as an array in the database, 
     # this way we can get a count of how many submissions we have for each topic, 
-    # and then we order by count desc to get the most popular topics first
+    # and then we order by count desc to get the most popular topics first.
+    # COUNT(DISTINCT title) counts unique problems, so re-solving Two Sum 5 times doesn't make Array look 5x stronger
+    # (this is also why these numbers now line up with the "unique solved" stat instead of being bigger than it)
     cur.execute("""
-        SELECT unnest(topics) as topic, COUNT(*) as count
-        FROM submissions
+        SELECT topic, COUNT(DISTINCT title) as count
+        FROM submissions, unnest(topics) as topic
         GROUP BY topic
         ORDER BY count DESC
     """)
@@ -96,10 +102,14 @@ def get_topics():
     topics = [
         {
             "topic": row[0],
-            "count": row[1]
+            "count": row[1],
+            "interview": row[0] in INTERVIEW_TOPICS #lets the dashboard show just interview topics, same list the recommender uses
         }
         for row in rows 
     ]
+    # interview topics I haven't touched yet have no rows, so add them with 0 so the dashboard can show the gaps
+    touched = {t["topic"] for t in topics}
+    topics += [{"topic": t, "count": 0, "interview": True} for t in INTERVIEW_TOPICS if t not in touched]
     set_cache("topics", topics) #cache the topics data for 6 minutes, just like we do with the submissions,
     return topics
 #return the list of topics and their counts as a JSON response to the frontend, we don't need to cache this one 
@@ -137,6 +147,10 @@ def refresh_problem(topic: str):
 
 @app.get("/activity")
 def get_activity():
+    cached = get_cache("activity") #we were already saving this to the cache below, just never reading it
+    if cached:
+        return cached
+
     conn = get_connection() #get a connection to the database
     cur = conn.cursor() #create a cursor to execute queries
     cur.execute("""
