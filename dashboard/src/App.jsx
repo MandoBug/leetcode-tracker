@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react"
 import { getJSON } from "./api"
 import { useRoute, to } from "./router"
 import Dashboard from "./pages/Dashboard"
+import NotesPage from "./pages/NotesPage"
 
 // top-level: loads the data once, draws the top bar, and picks the page from the url (see router.js)
 function App() {
@@ -51,6 +52,10 @@ function App() {
       <header className="topbar">
         <div className="topbar-left">
           <a className="wordmark" href={to()}>LC <span>·</span> Tracker</a>
+          <nav className="tabs">
+            <a href={to()} className={route.page !== "notes" ? "on" : ""}>Dashboard</a>
+            <a href={to("notes")} className={route.page === "notes" ? "on" : ""}>Notes</a>
+          </nav>
         </div>
         {lastSolved && (
           <span className="sync">
@@ -59,6 +64,7 @@ function App() {
         )}
       </header>
 
+      {route.page === "notes" && <NotesPage slug={route.param} submissions={data.submissions} now={data.loadedAt} />}
       {/* any unknown url falls back to the dashboard */}
       {route.page !== "notes" && <Dashboard data={data} setRecommendations={setRecommendations} />}
     </div>
