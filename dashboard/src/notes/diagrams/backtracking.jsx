@@ -50,7 +50,7 @@ function permutationFrames() {
                     <div className="fig-row" style={{ marginTop: 8 }}>
                         <ArrayViz items={path.length ? [...path] : ["-"]} title="path" showIndex={false} states={Object.fromEntries(path.map((_, i) => [i, "active"]))} />
                         <ArrayViz items={used.map(u => (u ? "T" : "F"))} title="used" showIndex={false} states={Object.fromEntries(used.map((u, i) => [i, u ? "found" : "default"]))} />
-                        <ArrayViz items={saved.length ? saved : ["-"]} title="res" showIndex={false} cell={62} states={Object.fromEntries(saved.map((_, i) => [i, "done"]))} />
+                        <ArrayViz items={saved.length ? [...saved] : ["-"]} title="res" showIndex={false} cell={62} states={Object.fromEntries(saved.map((_, i) => [i, "done"]))} />
                     </div>
                 </div>
             ),

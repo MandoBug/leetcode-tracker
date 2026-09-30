@@ -68,7 +68,7 @@ function spiralFrames() {
         if (path.length) states[path[path.length - 1].join(",")] = "active"
         frames.push({
             caption,
-            view: <GridViz grid={grid} states={states} path={path.length > 1 ? path : undefined} cell={48} label="spiral order" />,
+            view: <GridViz grid={grid} states={states} path={path.length > 1 ? [...path] : undefined} cell={48} label="spiral order" />,
         })
     }
     snap(`Four walls: top = 0, bottom = ${n - 1}, left = 0, right = ${n - 1}. Walk along the outside, then move the wall you just finished inward.`)
