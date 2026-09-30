@@ -72,7 +72,13 @@ export function Stepper({ frames, title, legend }) {
                     <button onClick={togglePlay} className="play" aria-label={playing ? "pause" : "play"}>{playing ? "Pause" : "Play"}</button>
                 </div>
             </div>
-            <div className="fig-body">{frames[i].view}</div>
+            {/* every frame sits in the same grid cell and only the current one is visible,
+                so the figure is always as tall as its tallest frame and the controls never jump */}
+            <div className="fig-body stepper-frames">
+                {frames.map((f, k) => (
+                    <div key={k} className={k === i ? "on" : ""} aria-hidden={k !== i}>{f.view}</div>
+                ))}
+            </div>
             <div className="stepper-dots" aria-hidden="true">
                 {frames.map((_, k) => (
                     <button key={k} className={k === i ? "on" : ""} onClick={() => { setPlaying(false); setI(k) }} tabIndex={-1} />
