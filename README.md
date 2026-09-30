@@ -13,52 +13,69 @@ next — with direct links to problems and a reroll button if I don't like the s
 
 ![LC Tracker demo](assets/lc-tracker-gif.gif)
 
-**[lcdashboard.dev](https://www.lcdashboard.live/)** — live at your own domain once connected
+**[lcdashboard.live](https://www.lcdashboard.live/)**
+
+---
+
+## What It Does
+
+- **Tracks every accepted submission automatically.** A poller checks LeetCode every 10 minutes, and the dashboard shows unique solves, difficulty split, activity heatmap, and cumulative progress.
+- **Tells me what to study next.** An ML scoring model ranks the 27 topics that actually show up in interviews and suggests one Easy and one Medium problem for each (premium problems filtered out), each with its own reroll.
+- **Makes me review what I've already solved.** Spaced repetition brings every solved problem back 1, 7, 30, then 90 days later, and a review queue lists the most overdue ones.
+- **Sets a weekly goal that adapts to me.** 10% above my recent average, or half my old pace when I'm coming back from a break.
+- **Holds my study notes.** One page per interview topic with step through diagrams, commented templates, worked examples, and a practice list that checks off what I've solved.
 
 ---
 
 ## How It Works
 
-Every 10 minutes a poller hits LeetCode's GraphQL API using my session credentials and 
-fetches my latest submissions. It enriches each one with topic tags and difficulty from 
-a second query, then drops them into a Redis queue. A background worker pulls from the 
-queue one at a time and writes to PostgreSQL. The FastAPI backend serves everything to 
-the React dashboard via cached endpoints, with Redis handling both the queue and the 
-read cache so the database never gets hammered.
+### The pipeline
 
-The ML recommendation engine sits on top of PostgreSQL and scores every interview topic 
-(a fixed list of 27 in `ml/topics.py` — niche tags like Randomized or Game Theory are ignored) 
-using three weighted factors:
+Every 10 minutes a poller hits LeetCode's GraphQL API using my session credentials and 
+fetches my latest submissions. It skips anything already saved, enriches new ones with topic 
+tags and difficulty from a second query, then drops them into a Redis queue. A background 
+worker blocks on the queue (`BLPOP`) and writes each submission to PostgreSQL, retrying with 
+exponential backoff if Redis or Postgres drops the connection. The FastAPI backend serves 
+everything to the React dashboard, with Redis also acting as a read cache so the database 
+never gets hammered. Once a week the scheduler re-syncs the full list of 4,000+ LeetCode 
+problems, including which ones are premium.
+
+### The recommender
+
+The ML recommendation engine scores every interview topic (a fixed list of 27 in 
+`ml/topics.py`, so niche tags like Randomized or Game Theory are ignored) using three weighted 
+factors:
 ```
 priority_score = (1 / (count + 1)) * recency_weight * difficulty_weight
 ```
 
-- **Count** — how many unique problems I've done in this topic (Laplace smoothed so zero-count 
+- **Count**: how many unique problems I've done in this topic (Laplace smoothed so zero count 
   topics don't divide by zero and naturally float to the top)
-- **Recency** — how long since I last touched the topic, on a log scale so a 100-day gap 
-  doesn't completely dominate a 30-day gap
-- **Difficulty** — if I've only done easy problems in a topic, the weight goes up
+- **Recency**: how long since I last touched the topic, on a log scale so a 100 day gap 
+  doesn't completely dominate a 30 day gap. Topics I've never touched count as a full year stale.
+- **Difficulty**: if I've only done easy problems in a topic, the weight goes up
 
-Each recommendation comes with a problem to review and two new problems to try, one Easy 
-and one Medium (for days when my brain is fried vs. days I want real interview practice), 
-pulled from a local table of all 3,800+ LeetCode problems with premium ones filtered out. 
-Each suggestion has its own reroll button.
+Each of the top 10 topics comes with a problem to review and two new problems to try, one Easy 
+and one Medium (for days when my brain is fried vs. days I want real interview practice).
 
-The review problem comes from **spaced repetition**: every solved problem is due again 1, 7, 
-30, then 90 days after I solve it, and the most overdue one in each topic gets surfaced. 
-Re-solving it on LeetCode automatically pushes it to the next, longer interval, since it's all 
-worked out from the submissions table. A review queue on the dashboard shows the most overdue 
-problems across every topic.
+### Spaced repetition
 
-A **weekly goal** adapts to my pace: 10% above my average over my last 4 active weeks, or half 
-my old pace when I'm coming back from a break.
+Every solved problem is due again 1, 7, 30, then 90 days after I solve it, based on how many 
+different days I've solved it. The most overdue one in each topic becomes that topic's review 
+problem. Re-solving it on LeetCode automatically pushes it to the next, longer interval, since 
+it's all worked out from the submissions table (`ml/review.py`).
 
-## Study Notes
+### Weekly goal
+
+The goal is 10% above my average over my last 4 active weeks, clamped between 5 and 20. After 
+3 or more weeks off it starts at half my old pace instead (`ml/goal.py`).
+
+### Study notes
 
 The Notes tab has a page for each of the 27 interview topics: the core idea, step through 
 diagrams of the algorithm running, commented Python templates, worked LeetCode examples, and a 
-practice list that checks off the problems I've already solved. Notes I haven't touched in over 
-a month show up under "Worth rereading", and every study card links to its topic's notes.
+practice list that checks off the problems I've already solved. Topics I haven't touched in 
+over a month show up under "Worth rereading", and every study card links to its notes.
 
 Notes live in `dashboard/src/notes/content/<topic>.md`, and their diagrams in 
 `dashboard/src/notes/diagrams/<topic>.jsx`, built from a small SVG kit in 
@@ -69,13 +86,12 @@ broken diagrams, invalid Python, and malformed practice lists.
 
 ## Architecture
 ```
-LeetCode → Poller → Redis (queue) → Worker → PostgreSQL
-                                        ↑
-                                   Redis (cache)
-                                        ↓
-                          FastAPI → React Dashboard
-                               ↑
-                          ML Recommender
+                 every 10 min                      BLPOP
+LeetCode GraphQL ────────────► Poller ──► Redis queue ──► Worker ──► PostgreSQL
+                               (weekly: full problem list sync)          │
+                                                                          ▼
+React dashboard ◄──── FastAPI ◄──── Redis cache ◄──── ML: recommender, spaced
+ (Vercel)            (Railway)                         repetition, weekly goal
 ```
 
 ---
@@ -84,37 +100,29 @@ LeetCode → Poller → Redis (queue) → Worker → PostgreSQL
 
 **Backend**
 - Python · FastAPI · APScheduler
-- PostgreSQL · Redis
+- PostgreSQL · Redis (queue + cache)
 - psycopg2 · python-dotenv
 
 **Frontend**
 - React · Vite
-- Recharts (bar chart, radar chart, line chart)
-- Custom activity heatmap
+- Recharts (radar chart, progress chart)
+- Custom SVG diagram kit for the notes (arrays, trees, graphs, grids, stacks, step through player)
+- react-markdown · prism-react-renderer
 
 **Infrastructure**
-- Railway — FastAPI, worker, scheduler, PostgreSQL, Redis
-- Vercel — React frontend
+- Railway: FastAPI, worker, scheduler, PostgreSQL, Redis (services talk over private networking)
+- Vercel: React frontend
 
 ---
 
-## Features
+## Project Layout
 
-- Real-time submission tracking via LeetCode GraphQL API
-- Redis message queue decoupling poller from database writes
-- ML-powered topic recommendations, limited to interview topics, with tiered prioritization
-- Easy + Medium suggestions per topic, premium problems filtered out
-- Spaced repetition review queue (1, 7, 30, 90 days)
-- Adaptive weekly goal with a days-practiced tracker
-- My study notes for 27 interview topics, with interactive diagrams
-- GitHub-style activity heatmap for the last 6 months
-- Interview readiness radar (progress toward 15 problems per core topic)
-- Per-topic breakdown with an interview-only / all-tags toggle
-- Cumulative progress line chart
-- Reroll button for new problem suggestions
-- Redis read cache on all endpoints for fast dashboard loads
-- Auto-polling every 10 minutes via APScheduler, skipping submissions that are already saved
-- Worker survives Redis/Postgres drops with exponential backoff instead of crashing
+```
+backend/     FastAPI app, Postgres helpers, Redis queue + cache, queue worker
+poller/      LeetCode GraphQL client and the scheduler (10 min polls, weekly problem sync)
+ml/          recommender, spaced repetition, weekly goal, interview topic list, problem sync
+dashboard/   React app: dashboard page, notes page, notes content and diagram kit
+```
 
 ---
 
@@ -127,15 +135,16 @@ pip install -r requirements.txt
 
 # set up .env
 cp .env.example .env
-# fill in LEETCODE_SESSION, LEETCODE_CSRF, DB_*, REDIS_URL
+# fill in LEETCODE_SESSION, LEETCODE_CSRF, DATABASE_URL (or DB_*), REDIS_URL
 
 # fill the problems table (and premium flags) once; the scheduler re-syncs it weekly
 python -m ml.fetch_problems
 
 # start postgres and redis locally, then run
-python -m backend.worker        # terminal 1
-python -m poller.scheduler      # terminal 2
-cd dashboard && npm install && npm run dev  # terminal 3
+uvicorn backend.main:app --port 8000   # terminal 1: API
+python -m backend.worker               # terminal 2: queue worker
+python -m poller.scheduler             # terminal 3: poller
+cd dashboard && npm install && VITE_API_URL=http://localhost:8000 npm run dev   # terminal 4
 ```
 
 ---
