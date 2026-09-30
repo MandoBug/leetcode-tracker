@@ -9,7 +9,7 @@ A heap answers one question fast: **what's the smallest thing right now?** It's 
 | pop the minimum | O(log n) |
 | build from a list, `heapify` | O(n) |
 
-Use a heap whenever you repeatedly need the smallest (or largest) item **while items keep arriving**: top k, merging sorted streams, scheduling by time, Dijkstra.
+Use a heap whenever I repeatedly need the smallest (or largest) item **while items keep arriving**: top k, merging sorted streams, scheduling by time, Dijkstra.
 
 ## How it's stored
 
@@ -31,7 +31,7 @@ Push
 Pop
 ```
 
-You won't implement these in an interview. Python's `heapq` does it on a plain list:
+I won't implement these in an interview. Python's `heapq` does it on a plain list:
 
 ```python
 import heapq
@@ -46,11 +46,11 @@ heapq.heappushpop(heap, x)      # push x then pop the min, faster than both
 heapq.nlargest(3, nums)         # quick one liners for small k
 ```
 
-> **Tip:** `heapq` is a **min** heap only. For a max heap, push negated values (`-x`) and negate again when you pop. For objects, push tuples: `(priority, tie_breaker, item)`. The tie breaker (like an index) stops Python from comparing items that can't be compared.
+> **Tip:** `heapq` is a **min** heap only. For a max heap, push negated values (`-x`) and negate again when I pop. For objects, push tuples: `(priority, tie_breaker, item)`. The tie breaker (like an index) stops Python from comparing items that can't be compared.
 
 ## Pattern 1: top k with a size k heap
 
-To keep the k **largest** items, use a **min** heap of size k. That sounds backwards, but the root is the weakest of your top k, which is exactly the one to compare against and throw out.
+To keep the k **largest** items, use a **min** heap of size k. That sounds backwards, but the root is the weakest of my top k, which is exactly the one to compare against and throw out.
 
 ```diagram
 TopK

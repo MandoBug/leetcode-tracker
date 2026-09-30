@@ -6,7 +6,7 @@ A trie (pronounced "try", from re**trie**val) stores words as paths in a tree, o
 Structure
 ```
 
-It shines when the question is about **prefixes**: autocomplete, "does any word start with this?", or checking a grid against thousands of words at once. A hash set can tell you if a whole word exists; a trie can also tell you if you're **on the way** to one.
+It shines when the question is about **prefixes**: autocomplete, "does any word start with this?", or checking a grid against thousands of words at once. A hash set can tell me if a whole word exists; a trie can also tell me if I'm **on the way** to one.
 
 ## The template
 
@@ -80,11 +80,11 @@ class WordDictionary:
         return dfs(self.root, 0)
 ```
 
-The nested dict version (`node.setdefault(ch, {})`) is a common shortcut in Python when you don't need extra fields on each node.
+The nested dict version (`node.setdefault(ch, {})`) is a common shortcut in Python when I don't need extra fields on each node.
 
 ## A trie plus backtracking
 
-Word Search II gives a grid and a list of words and asks which words appear. Searching the grid once per word is too slow. Instead, put every word in a trie and run **one** backtracking search over the grid, following the trie as you go. The moment the current path isn't a prefix of any word, stop.
+Word Search II gives a grid and a list of words and asks which words appear. Searching the grid once per word is too slow. Instead, put every word in a trie and run **one** backtracking search over the grid, following the trie as I go. The moment the current path isn't a prefix of any word, stop.
 
 ```python title="212. Word Search II"
 class Solution:
@@ -128,7 +128,7 @@ class Solution:
 - replacing words by their shortest root (Replace Words, 648)
 - XOR maximization over numbers, using a trie of **bits** (Maximum XOR of Two Numbers, 421)
 
-If you only need "is this exact word present?", a `set` is simpler.
+If I only need "is this exact word present?", a `set` is simpler.
 
 ## Practice
 

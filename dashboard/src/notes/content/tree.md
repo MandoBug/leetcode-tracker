@@ -10,11 +10,11 @@ class TreeNode:
         self.right = right
 ```
 
-Almost every tree problem is solved by **recursion**, because a tree is recursive by definition: a node plus a left subtree plus a right subtree. If you can answer the question for the two subtrees, you can usually answer it for the whole tree.
+Almost every tree problem is solved by **recursion**, because a tree is recursive by definition: a node plus a left subtree plus a right subtree. If I can answer the question for the two subtrees, I can usually answer it for the whole tree.
 
 ## One walk, three positions
 
-Here is the skeleton of every binary tree traversal. It visits every node, and every node gets **three moments** where you can run code:
+Here is the skeleton of every binary tree traversal. It visits every node, and every node gets **three moments** where I can run code:
 
 ```python title="the traversal framework"
 def traverse(root):
@@ -39,7 +39,7 @@ OrderBadges
 
 What each position is good for:
 
-| Position | What you know there | Use it for |
+| Position | What I know there | Use it for |
 |---|---|---|
 | **Preorder** | only what was passed down from above | passing info down: depth so far, path so far, copying a tree |
 | **Inorder** | the left subtree is done | BSTs, where inorder is sorted order |
@@ -51,7 +51,7 @@ What each position is good for:
 
 Every tree problem can be approached one of two ways. Pick whichever makes the problem simpler.
 
-**1. Traverse:** walk the tree once with the framework above and update some outside variable as you go. The function returns nothing.
+**1. Traverse:** walk the tree once with the framework above and update some outside variable as I go. The function returns nothing.
 
 **2. Decompose:** define what the function **returns** for a subtree, and build the answer for a node from its children's answers. Trust the recursive call to be correct.
 

@@ -74,7 +74,7 @@ Path Sum (112) passes the remaining target down. Validate BST (98) passes the al
 
 ## Pattern 3: level by level
 
-When the question mentions **levels, rows, or what you see from the side**, use a queue and process one level per loop iteration.
+When the question mentions **levels, rows, or what I see from the side**, use a queue and process one level per loop iteration.
 
 ```diagram
 RightSideView
@@ -128,7 +128,7 @@ If p is an ancestor of q, the search returns p as soon as it reaches it and neve
 
 ## Pattern 5: build a tree from traversals
 
-Preorder tells you the **root** (it comes first). Inorder tells you **what's left and right** of the root. Together they pin down the whole tree.
+Preorder tells me the **root** (it comes first). Inorder tells me **what's left and right** of the root. Together they pin down the whole tree.
 
 ```diagram
 BuildTree
