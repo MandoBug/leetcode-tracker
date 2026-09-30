@@ -1,6 +1,6 @@
 ## The idea
 
-A sliding window is a range `[left, right]` over an array or string that you move forward instead of rebuilding. Move `right` to **grow** the window, move `left` to **shrink** it, and keep some running state (a sum, or counts of what's inside) up to date as elements enter and leave.
+A sliding window is a range `[left, right]` over an array or string that I move forward instead of rebuilding. Move `right` to **grow** the window, move `left` to **shrink** it, and keep some running state (a sum, or counts of what's inside) up to date as elements enter and leave.
 
 Use it when the problem asks about a **contiguous** subarray or substring: longest, shortest, count, or "does one exist". The brute force checks every start and end, O(n²). The window touches each element twice at most (once entering, once leaving), so it's O(n).
 
@@ -53,7 +53,7 @@ class Solution:
         return best
 ```
 
-Longest Repeating Character Replacement (424) is the same loop with a different rule: the window is invalid when `window length - count of its most common letter > k`, because that's how many letters you'd need to replace.
+Longest Repeating Character Replacement (424) is the same loop with a different rule: the window is invalid when `window length - count of its most common letter > k`, because that's how many letters I'd need to replace.
 
 ## Shortest valid window
 

@@ -1,6 +1,6 @@
 ## The idea
 
-A stack is last in, first out: you only ever touch the **top**. In Python a plain list is a stack. `append` pushes, `pop()` pops, `stack[-1]` peeks, and all three are O(1).
+A stack is last in, first out: I only ever touch the **top**. In Python a plain list is a stack. `append` pushes, `pop()` pops, `stack[-1]` peeks, and all three are O(1).
 
 Reach for a stack when the **most recent unfinished thing** is the one that matters next:
 
@@ -98,7 +98,7 @@ class Solution:
 
 ## Pattern 4: nesting
 
-When input nests, push the **outer context** when you enter a level and pop it when the level ends. Decode String (`3[a2[c]]` becomes `accaccacc`) saves the string built so far and the repeat count on every `[`.
+When input nests, push the **outer context** when I enter a level and pop it when the level ends. Decode String (`3[a2[c]]` becomes `accaccacc`) saves the string built so far and the repeat count on every `[`.
 
 ```python title="394. Decode String"
 class Solution:
@@ -124,7 +124,7 @@ Simplify Path (71) is the gentle version: split on `/`, push folder names, pop o
 
 ## Stacks and recursion
 
-Every recursive function runs on the **call stack**. Anything recursive can be rewritten with your own stack, which is how iterative DFS and iterative tree traversals work. See the [Recursion](#/notes/recursion) and [DFS](#/notes/dfs) notes.
+Every recursive function runs on the **call stack**. Anything recursive can be rewritten with my own stack, which is how iterative DFS and iterative tree traversals work. See the [Recursion](#/notes/recursion) and [DFS](#/notes/dfs) notes.
 
 When a problem asks for "the next greater" or "the previous smaller" element, the stack needs to stay **sorted**. That special case has its own page: [Monotonic Stack](#/notes/monotonic-stack).
 

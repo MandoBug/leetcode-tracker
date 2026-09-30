@@ -2,9 +2,9 @@
 
 A binary search tree adds one rule to a binary tree: for every node, **everything in its left subtree is smaller and everything in its right subtree is bigger**. Not just its children, the entire subtrees.
 
-That rule gives you two superpowers:
+That rule gives me two superpowers:
 
-1. **Search like binary search.** At each node you know which side the target must be on, so you only walk one path from the root: O(height).
+1. **Search like binary search.** At each node I know which side the target must be on, so I only walk one path from the root: O(height).
 2. **Inorder traversal is sorted.** Left, node, right visits values smallest to largest.
 
 ```diagram
@@ -13,7 +13,7 @@ Search
 
 ## Search, insert, and the BST loop
 
-Because you only ever go one way, BST operations are usually a simple loop instead of full recursion.
+Because I only ever go one way, BST operations are usually a simple loop instead of full recursion.
 
 ```python title="700. Search in a Binary Search Tree"
 class Solution:
@@ -82,7 +82,7 @@ The iterative version can stop the moment it reaches the k-th value, instead of 
 
 ## Lowest common ancestor in a BST
 
-In a BST you don't need to search both sides. If p and q are both smaller than the node, the answer is on the left. Both bigger, on the right. Otherwise they split here, and this node is the answer.
+In a BST I don't need to search both sides. If p and q are both smaller than the node, the answer is on the left. Both bigger, on the right. Otherwise they split here, and this node is the answer.
 
 ```python title="235. Lowest Common Ancestor of a Binary Search Tree"
 class Solution:
@@ -133,7 +133,7 @@ class Solution:
 Shape
 ```
 
-Every BST operation is O(height). That's O(log n) only when the tree is balanced. Interview problems usually give you a BST as is, but it's worth saying out loud that the bound is O(h).
+Every BST operation is O(height). That's O(log n) only when the tree is balanced. Interview problems usually give me a BST as is, but it's worth saying out loud that the bound is O(h).
 
 > **Tip:** Python has no built in balanced BST. For "sorted structure with inserts" in Python, use `bisect.insort` on a list (O(n) inserts, fine for small inputs) or `sortedcontainers.SortedList`, which LeetCode supports.
 

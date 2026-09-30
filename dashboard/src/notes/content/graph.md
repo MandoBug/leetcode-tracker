@@ -54,7 +54,7 @@ class Solution:
 
 ## Cycles in a directed graph
 
-In an undirected graph, any edge back to an already visited node (other than the parent you came from) is a cycle. Directed graphs need more care, because two paths can meet at the same node without forming a loop.
+In an undirected graph, any edge back to an already visited node (other than the parent I came from) is a cycle. Directed graphs need more care, because two paths can meet at the same node without forming a loop.
 
 ```diagram
 ThreeColors

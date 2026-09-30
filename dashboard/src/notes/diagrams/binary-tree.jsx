@@ -53,7 +53,7 @@ export function RightSideView() {
     return (
         <Figure
             caption="Right Side View: go level by level with a queue (BFS) and keep the LAST node of each level. Note that 7 is visible from the right even though it's a left child, because nothing else is on its level."
-            legend={[{ s: "found", label: "last node of its level: what you see from the right" }]}
+            legend={[{ s: "found", label: "last node of its level: what I see from the right" }]}
         >
             <TreeViz root={root} dx={52} label="right side view" />
         </Figure>
@@ -91,7 +91,7 @@ export function LCA() {
 export function BuildTree() {
     return (
         <Figure
-            caption="Build from preorder + inorder. Preorder's first value is the root (3). Find 3 in inorder: everything left of it (9) is the left subtree, everything right (15, 20, 7) is the right subtree. The sizes tell you how to split preorder too. Recurse on each half."
+            caption="Build from preorder + inorder. Preorder's first value is the root (3). Find 3 in inorder: everything left of it (9) is the left subtree, everything right (15, 20, 7) is the right subtree. The sizes also say how to split preorder. Recurse on each half."
             legend={[{ s: "found", label: "root" }, { s: "active", label: "left subtree" }, { s: "window", label: "right subtree" }]}
         >
             <div className="fig-row">

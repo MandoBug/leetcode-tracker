@@ -21,7 +21,7 @@ for ch in s:
 out = "".join(parts)
 ```
 
-When you need to edit characters in place (reversing, swapping), convert to a list first: `chars = list(s)`, edit, then `"".join(chars)`.
+When I need to edit characters in place (reversing, swapping), convert to a list first: `chars = list(s)`, edit, then `"".join(chars)`.
 
 ## Handy tools
 

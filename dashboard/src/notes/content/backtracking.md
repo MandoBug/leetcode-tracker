@@ -1,8 +1,8 @@
 ## The idea
 
-Backtracking is walking a **decision tree**. At every step you make a choice, go deeper, and when you come back you undo that choice so you can try the next one. Every complete path from the root to a stopping point is one candidate answer.
+Backtracking is walking a **decision tree**. At every step I make a choice, go deeper, and when I come back I undo that choice so I can try the next one. Every complete path from the root to a stopping point is one candidate answer.
 
-It is brute force with good manners. You still try everything, but you build each answer one piece at a time and throw away a branch the moment it can't work.
+It is brute force with good manners. I still try everything, but I build each answer one piece at a time and throw away a branch the moment it can't work.
 
 ```diagram
 PermutationTree
@@ -10,7 +10,7 @@ PermutationTree
 
 ## The three things to find in every problem
 
-Before writing any code, name these three things. If you can say them out loud, the code writes itself.
+Before writing any code, name these three things. If I can say them out loud, the code writes itself.
 
 | Piece | Question to ask | Permutations of [1,2,3] |
 |---|---|---|
@@ -45,7 +45,7 @@ Three lines do all the work: **choose, explore, undo**. The undo is what makes i
 
 ## Why choose and undo sit inside the loop
 
-An **edge** is the line connecting a parent node to a child node. It is not the node itself. Nodes are the states you are in between choices, and edges are the choices.
+An **edge** is the line connecting a parent node to a child node. It is not the node itself. Nodes are the states between choices, and edges are the choices themselves.
 
 ```diagram
 ChooseUndo
@@ -86,7 +86,7 @@ Step through the first branch to watch `path` and `used` change together:
 PermutationSteps
 ```
 
-> **Tip:** Keep `res`, `path`, and `used` in the outer function and give `backtrack` no parameters. Mixing `self.path` with a `path` parameter works by accident (they are the same list) but it is easy to get confused about which one you are changing.
+> **Tip:** Keep `res`, `path`, and `used` in the outer function and give `backtrack` no parameters. Mixing `self.path` with a `path` parameter works by accident (they are the same list) but it is easy to lose track of which one I'm changing.
 
 ## Subsets (78): every node is an answer
 
@@ -140,7 +140,7 @@ class Solution:
 
 ## Reuse allowed: Combination Sum (39)
 
-When the same number can be picked again, recurse with `i` instead of `i + 1`. The child is allowed to pick the same number, but still never one to its left, so you don't get the same combination in two orders.
+When the same number can be picked again, recurse with `i` instead of `i + 1`. The child is allowed to pick the same number, but still never one to its left, so I don't get the same combination in two orders.
 
 ```python title="39. Combination Sum"
 class Solution:
@@ -185,7 +185,7 @@ def backtrack(start):
         path.pop()
 ```
 
-It has to be `i > start`, not `i > 0`. With `i > 0` you would also block going deeper with the second 2, which would lose `[2, 2]`.
+It has to be `i > start`, not `i > 0`. With `i > 0` I would also block going deeper with the second 2, which would lose `[2, 2]`.
 
 Permutations with duplicates (47) use `used` instead of `start`, so the rule changes shape:
 
@@ -212,7 +212,7 @@ Every problem in this family is one skeleton with a few settings changed.
 
 ## All in one template
 
-Two tree shapes (subset or permutation) times three element rules (unique, duplicates, reuse). Fill in the four capital words and you have any of the eight classic problems.
+Two tree shapes (subset or permutation) times three element rules (unique, duplicates, reuse). Fill in the four capital words and I get any of the eight classic problems.
 
 ```python title="all in one"
 def backtrack(start):
@@ -235,7 +235,7 @@ def backtrack(start):
 
 The same choose, explore, undo loop solves problems that look very different at first:
 
-- **Generate Parentheses (22):** path is the string so far, choices are `(` if you still have opens left and `)` if it wouldn't close more than you opened.
+- **Generate Parentheses (22):** path is the string so far, choices are `(` if I still have opens left and `)` if it wouldn't close more than I opened.
 - **Letter Combinations of a Phone Number (17):** each level is one digit, choices are that digit's letters.
 - **Word Search (79):** path is the cells used so far, choices are the 4 neighbours. Mark a cell as visited before going deeper and unmark it after.
 - **N-Queens (51):** each level is one row, choices are the columns that aren't attacked.
@@ -243,7 +243,7 @@ The same choose, explore, undo loop solves problems that look very different at 
 
 ## Complexity
 
-Time is roughly **(number of answers) × (cost to copy one answer)**. You can't beat the number of answers, because you have to produce every one.
+Time is roughly **(number of answers) × (cost to copy one answer)**. I can't beat the number of answers, because I have to produce every one.
 
 | Problem | Time | Why |
 |---|---|---|

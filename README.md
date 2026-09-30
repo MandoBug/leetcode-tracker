@@ -106,7 +106,7 @@ LeetCode → Poller → Redis (queue) → Worker → PostgreSQL
 - Easy + Medium suggestions per topic, premium problems filtered out
 - Spaced repetition review queue (1, 7, 30, 90 days)
 - Adaptive weekly goal with a days-practiced tracker
-- Study notes for 27 interview topics with interactive diagrams
+- My study notes for 27 interview topics, with interactive diagrams
 - GitHub-style activity heatmap for the last 6 months
 - Interview readiness radar (progress toward 15 problems per core topic)
 - Per-topic breakdown with an interview-only / all-tags toggle

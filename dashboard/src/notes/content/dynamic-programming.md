@@ -4,7 +4,7 @@ Dynamic programming is **recursion that remembers**. It applies when a problem b
 
 Two signs that a problem is DP:
 
-1. **It asks for a best, a count, or a yes/no over many choices**: "minimum coins", "number of ways", "longest", "can you reach".
+1. **It asks for a best, a count, or a yes/no over many choices**: "minimum coins", "number of ways", "longest", "can I reach".
 2. **A brute force recursion would recompute the same thing**, like `fib(3)` showing up in several branches.
 
 ```diagram
@@ -81,7 +81,7 @@ class Solution:
 
 ## Pattern 2: a grid
 
-The state is a cell, and the transition looks at the cells you could have come from.
+The state is a cell, and the transition looks at the cells I could have come from.
 
 ```diagram
 UniquePaths

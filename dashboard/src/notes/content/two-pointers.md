@@ -101,7 +101,7 @@ class Solution:
         return res
 ```
 
-This is O(n²), which is the best you can do for 3Sum. 3Sum Closest (16) and 4Sum (18) are the same loop with one more layer or a different check.
+This is O(n²), which is the best I can do for 3Sum. 3Sum Closest (16) and 4Sum (18) are the same loop with one more layer or a different check.
 
 ## Same direction
 
@@ -143,7 +143,7 @@ class Solution:
 
 ## When two pointers won't work
 
-The opposite ends trick needs a reason to throw one side away, which usually means **sorted** data. If the input isn't sorted and you need the original indexes (the original Two Sum), use a hash map instead. If sorting is allowed and indexes don't matter, sort first.
+The opposite ends trick needs a reason to throw one side away, which usually means **sorted** data. If the input isn't sorted and I need the original indexes (the original Two Sum), use a hash map instead. If sorting is allowed and indexes don't matter, sort first.
 
 ## Practice
 

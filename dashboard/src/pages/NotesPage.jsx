@@ -76,9 +76,9 @@ function NotesHome({ stats }) {
     return (
         <div className="notes-home">
             <header className="notes-header">
-                <div className="block-label">Study notes</div>
-                <h1>Interview topics, one page each</h1>
-                <p>Each note has the core idea, pictures of how it runs, a commented template, worked examples, and a practice list that checks off what I've already solved.</p>
+                <div className="block-label">My notes</div>
+                <h1>Everything I've studied, one page each</h1>
+                <p>These are the notes I've built up since the start of my LeetCode journey, one page for every interview topic I've worked through. Each has the core idea, pictures of how it runs, a commented template, worked examples, and a practice list that checks off what I've already solved.</p>
             </header>
 
             {stale.length > 0 && (
@@ -115,7 +115,7 @@ function NotesHome({ stats }) {
     )
 }
 
-// highlights the section you're reading in the "on this page" list
+// highlights the section I'm reading in the "on this page" list
 function useActiveHeading(ids) {
     const [active, setActive] = useState(null)
     useEffect(() => {

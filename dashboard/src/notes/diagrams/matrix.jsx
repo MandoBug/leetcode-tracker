@@ -71,7 +71,7 @@ function spiralFrames() {
             view: <GridViz grid={grid} states={states} path={path.length > 1 ? [...path] : undefined} cell={48} label="spiral order" />,
         })
     }
-    snap(`Four walls: top = 0, bottom = ${n - 1}, left = 0, right = ${n - 1}. Walk along the outside, then move the wall you just finished inward.`)
+    snap(`Four walls: top = 0, bottom = ${n - 1}, left = 0, right = ${n - 1}. Walk along the outside, then move the wall I just finished inward.`)
     while (top <= bottom && left <= right) {
         for (let c = left; c <= right; c++) path.push([top, c])
         top++

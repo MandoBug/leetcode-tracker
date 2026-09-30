@@ -104,7 +104,7 @@ export function Container() {
 export function MergeFromBack() {
     return (
         <Figure
-            caption="Merge Sorted Array: nums1 has empty slots at the end. Fill from the BACK with the larger of the two last values. Writing at the end never overwrites a value you still need, so no extra array is required."
+            caption="Merge Sorted Array: nums1 has empty slots at the end. Fill from the BACK with the larger of the two last values. Writing at the end never overwrites a value I still need, so no extra array is required."
             legend={[{ s: "active", label: "compared" }, { s: "done", label: "already placed" }, { s: "muted", label: "empty slots" }]}
         >
             <div style={{ width: "fit-content", margin: "0 auto" }}>

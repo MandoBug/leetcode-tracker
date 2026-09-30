@@ -2,7 +2,7 @@
 
 Binary search looks at the middle of a range, decides which half can't contain the answer, and throws that half away. Each step halves the range, so a million items take about 20 steps: **O(log n)**.
 
-It needs one thing: a way to look at `mid` and know which side the answer is on. Sorted arrays give you that for free, but so do many problems that don't look like searching at all.
+It needs one thing: a way to look at `mid` and know which side the answer is on. Sorted arrays give me that for free, but so do many problems that don't look like searching at all.
 
 ```diagram
 Exact

@@ -8,19 +8,19 @@ The catch is that it doesn't always work.
 GreedyFails
 ```
 
-So a greedy solution has two parts: the rule, and a reason the rule is safe. You don't need a formal proof in an interview, but you should be able to say **why** the local choice never costs you the best answer.
+So a greedy solution has two parts: the rule, and a reason the rule is safe. I don't need a formal proof in an interview, but I should be able to say **why** the local choice never costs me the best answer.
 
-## How to convince yourself greedy is right
+## How to convince myself greedy is right
 
-The usual argument is an **exchange argument**: take any optimal answer that doesn't follow your rule, and show you can swap in the greedy choice without making it worse. If that's always possible, greedy is optimal.
+The usual argument is an **exchange argument**: take any optimal answer that doesn't follow my rule, and show I can swap in the greedy choice without making it worse. If that's always possible, greedy is optimal.
 
 Example: in interval scheduling, suppose the best answer's first interval ends later than the one ending earliest. Swap it for the earliest ending one. It ends sooner, so it can't collide with anything the other one didn't, and the count stays the same. So "earliest end first" is always safe.
 
-If you can build a small counterexample instead (like the coins above), it's a DP problem.
+If I can build a small counterexample instead (like the coins above), it's a DP problem.
 
 ## Pattern 1: intervals, sorted by end
 
-Sort by end time and keep every interval that starts after the last kept one ends. This maximizes how many non-overlapping intervals you keep, which is the same as minimizing how many you remove.
+Sort by end time and keep every interval that starts after the last kept one ends. This maximizes how many non-overlapping intervals I keep, which is the same as minimizing how many I remove.
 
 ```diagram
 Schedule
@@ -42,7 +42,7 @@ class Solution:
 
 Minimum Number of Arrows to Burst Balloons (452) is the same loop: one arrow per kept interval, and it counts the kept ones.
 
-**Merging** intervals is the other common task, and there you sort by **start**:
+**Merging** intervals is the other common task, and there I sort by **start**:
 
 ```python title="56. Merge Intervals"
 class Solution:
@@ -57,9 +57,9 @@ class Solution:
         return merged
 ```
 
-## Pattern 2: track the farthest you can reach
+## Pattern 2: track the farthest I can reach
 
-Jump Game doesn't need to try every jump. Just track the farthest index reachable so far. If you ever stand on an index beyond it, you're stuck.
+Jump Game doesn't need to try every jump. Just track the farthest index reachable so far. If I ever stand on an index beyond it, I'm stuck.
 
 ```diagram
 JumpGame
@@ -76,7 +76,7 @@ class Solution:
         return True
 ```
 
-Jump Game II (45) counts jumps with the same idea, treating each jump as a "level" in BFS: the current jump covers indexes up to `end`, and while scanning them you find how far the next jump could go.
+Jump Game II (45) counts jumps with the same idea, treating each jump as a "level" in BFS: the current jump covers indexes up to `end`, and while scanning them I find how far the next jump could go.
 
 ```python title="45. Jump Game II"
 class Solution:
@@ -156,7 +156,7 @@ class Solution:
 | Signal | Leans |
 |---|---|
 | sorting makes the right choice obvious | greedy |
-| you can explain why the local choice never hurts | greedy |
+| I can explain why the local choice never hurts | greedy |
 | a small counterexample breaks the obvious rule | DP |
 | the choice now changes what's allowed later in complicated ways | DP |
 

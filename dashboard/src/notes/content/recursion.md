@@ -3,9 +3,9 @@
 A recursive function solves a problem by calling itself on a **smaller version** of the same problem. Every recursive function has two parts:
 
 1. **Base case:** an input small enough to answer directly, which stops the recursion.
-2. **Recursive case:** shrink the input, call yourself, and use that answer to build yours.
+2. **Recursive case:** shrink the input, call myself, and use that answer to build mine.
 
-The mental trick that makes recursion click: **trust the recursive call.** When writing `fact(n)`, assume `fact(n - 1)` already works and returns the right answer. Your only job is to use it correctly and make sure the base case is right. Don't try to trace every level in your head.
+The mental trick that makes recursion click: **trust the recursive call.** When writing `fact(n)`, assume `fact(n - 1)` already works and returns the right answer. My only job is to use it correctly and make sure the base case is right. Don't try to trace every level in my head.
 
 ```python title="the shape of every recursive function"
 def solve(problem):
@@ -35,7 +35,7 @@ This is why recursion uses **O(depth)** extra memory, and why Python raises `Rec
 
 ## Three common shapes
 
-**1. Shrink by one.** Handle the first piece yourself, recurse on the rest. Lists and strings are the typical input.
+**1. Shrink by one.** Handle the first piece myself, recurse on the rest. Lists and strings are the typical input.
 
 ```python title="206. Reverse Linked List (recursive)"
 class Solution:
@@ -91,7 +91,7 @@ class Solution:
 ## How to analyze recursion
 
 - **Time** ≈ (number of calls) × (work per call). Draw the call tree and count the nodes.
-- **Space** = maximum depth of the call stack (plus anything you store).
+- **Space** = maximum depth of the call stack (plus anything I store).
 
 | Recursion | Calls | Time | Depth |
 |---|---|---|---|
@@ -105,7 +105,7 @@ class Solution:
 
 1. **No base case, or one that's never reached**, so the recursion never stops.
 2. **Not shrinking the input**, like calling `solve(n)` from inside `solve(n)`.
-3. **Ignoring the returned value**: writing `self.helper(node.left)` when you needed `x = self.helper(node.left)`.
+3. **Ignoring the returned value**: writing `self.helper(node.left)` when I needed `x = self.helper(node.left)`.
 4. **Recomputing the same subproblem** in a branching recursion without memoization.
 5. **Mutable default arguments** like `def f(x, seen=[])`, which are shared across calls. Pass `None` and create the list inside.
 

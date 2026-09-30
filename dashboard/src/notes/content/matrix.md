@@ -6,7 +6,7 @@ A matrix is a list of rows: `grid[r][c]` is row `r`, column `c`. Row numbers go 
 2. **Transforming it in place** (rotate, set zeroes, game of life).
 3. **Treating it as a graph** where each cell connects to its neighbours (islands, shortest path). Those live in the [DFS](#/notes/dfs) and [BFS](#/notes/bfs) notes.
 
-## Setup you'll write every time
+## Setup I'll write every time
 
 ```python
 rows, cols = len(grid), len(grid[0])
@@ -37,7 +37,7 @@ This is how N-Queens checks "is this diagonal already attacked?" in O(1): keep s
 
 ## Pattern 1: shrinking boundaries (spiral order)
 
-Keep four walls and walk just inside them. After finishing a side, move that wall inward. The two `if` checks stop you from walking the same row or column twice when the matrix isn't square.
+Keep four walls and walk just inside them. After finishing a side, move that wall inward. The two `if` checks stop me from walking the same row or column twice when the matrix isn't square.
 
 ```diagram
 Spiral
@@ -78,7 +78,7 @@ class Solution:
     def rotate(self, matrix: list[list[int]]) -> None:
         n = len(matrix)
         for r in range(n):
-            for c in range(r + 1, n):                 # only above the diagonal, or you swap twice
+            for c in range(r + 1, n):                 # only above the diagonal, or I swap twice
                 matrix[r][c], matrix[c][r] = matrix[c][r], matrix[r][c]
         for row in matrix:
             row.reverse()
@@ -119,7 +119,7 @@ class Solution:
                 matrix[r][0] = 0
 ```
 
-Game of Life (289) uses the same idea with extra states: encode "was alive, now dead" as 2 and "was dead, now alive" as 3 so you can still read the old value while writing the new one.
+Game of Life (289) uses the same idea with extra states: encode "was alive, now dead" as 2 and "was dead, now alive" as 3 so I can still read the old value while writing the new one.
 
 ## Pattern 4: sorted matrices
 
@@ -146,7 +146,7 @@ If the whole matrix reads as one sorted list row after row (Search a 2D Matrix, 
 1. Mixing up `rows` and `cols` in loops for non square grids.
 2. Building a 2D list with `[[0] * cols] * rows` (every row is the same list).
 3. Transposing the whole matrix instead of just above the diagonal, which swaps everything back.
-4. Changing cells while you still need their old values (use markers or a copy).
+4. Changing cells while I still need their old values (use markers or a copy).
 
 ## Practice
 

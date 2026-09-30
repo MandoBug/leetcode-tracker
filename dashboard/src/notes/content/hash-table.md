@@ -6,9 +6,9 @@ A hash table turns a key into an array index. It runs the key through a **hash f
 Buckets
 ```
 
-In Python you almost never build one yourself. `dict` maps keys to values and `set` stores keys only. Both give O(1) average time for insert, delete, and lookup.
+In Python I almost never build one myself. `dict` maps keys to values and `set` stores keys only. Both give O(1) average time for insert, delete, and lookup.
 
-The whole topic comes down to one trade: **spend O(n) memory to turn an O(n) search into an O(1) lookup.** Whenever you catch yourself writing a nested loop that asks "have I seen this before?", a hash table can usually remove the inner loop.
+The whole topic comes down to one trade: **spend O(n) memory to turn an O(n) search into an O(1) lookup.** Whenever I catch myself writing a nested loop that asks "have I seen this before?", a hash table can usually remove the inner loop.
 
 ## The Python toolkit
 
@@ -27,11 +27,11 @@ groups = defaultdict(list)       # missing keys start as []
 groups[key].append(word)
 ```
 
-> **Tip:** Keys must be hashable, meaning they can't change. Strings, numbers, and tuples work. Lists don't, so convert with `tuple(my_list)` when you need a list as a key.
+> **Tip:** Keys must be hashable, meaning they can't change. Strings, numbers, and tuples work. Lists don't, so convert with `tuple(my_list)` when I need a list as a key.
 
 ## Pattern 1: complement lookup
 
-Two Sum asks for two numbers that add to `target`. For each number `x`, the partner you need is `target - x`. Instead of scanning for it, check a dict of everything you've already passed.
+Two Sum asks for two numbers that add to `target`. For each number `x`, the partner I need is `target - x`. Instead of scanning for it, check a dict of everything I've already passed.
 
 ```diagram
 TwoSum

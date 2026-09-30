@@ -80,7 +80,7 @@ def calculate_difficulty_weight(easy, medium, hard):
 
 #now we need our recency weight, which gives higher weight to topics I haven't done in a while
 def calculate_recency_weight(last_seen):
-    """higher weight the longer its been since you touched a topic"""
+    """higher weight the longer it's been since I touched a topic"""
     if last_seen is None:
         # never touched: treat it like it's been a full year, the most stale a topic can reasonably be
         # (this used to be 2.0, which was actually LOWER than a topic I did a week ago: log(8) + 1 ≈ 3.1)

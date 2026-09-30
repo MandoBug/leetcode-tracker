@@ -15,7 +15,7 @@ from collections import deque
 
 def bfs(start, target):
     queue = deque([start])
-    visited = {start}             # mark when you ADD to the queue, not when you pop
+    visited = {start}             # mark when I ADD to the queue, not when I pop
     steps = 0
     while queue:
         for _ in range(len(queue)):       # process exactly one level
@@ -32,8 +32,8 @@ def bfs(start, target):
 
 Two details matter:
 
-1. **Mark visited when enqueuing.** If you wait until popping, the same node can be added many times from different neighbours, which blows up the queue.
-2. **`for _ in range(len(queue))`** processes one level at a time, so `steps` counts levels. Skip it when you don't need distances.
+1. **Mark visited when enqueuing.** If I wait until popping, the same node can be added many times from different neighbours, which blows up the queue.
+2. **`for _ in range(len(queue))`** processes one level at a time, so `steps` counts levels. Skip it when I don't need distances.
 
 ## Shortest path on a grid
 

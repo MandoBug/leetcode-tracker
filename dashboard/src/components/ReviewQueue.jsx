@@ -22,7 +22,7 @@ function ReviewQueue({ queue }) {
             </div>
 
             {queue.length === 0 ? (
-                <p className="empty">Nothing due right now. Everything you've solved is fresh.</p>
+                <p className="empty">Nothing due right now. Everything I've solved is still fresh.</p>
             ) : (
                 <ul className="queue">
                     {queue.map(p => (

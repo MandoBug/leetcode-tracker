@@ -27,7 +27,7 @@ const CORE_TOPICS = [
 
 // how many unique problems in a topic counts as "interview ready" (same as "strong" in TopicChart).
 // each axis shows progress toward this target instead of the raw count. With raw counts, Array (60+)
-// squashes every other axis into the middle and the shape tells you nothing
+// squashes every other axis into the middle and the shape says nothing
 const TARGET = 15
 
 function RadarTooltip({ active, payload }) {

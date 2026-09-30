@@ -56,7 +56,7 @@ export const GROUPS = [
             { slug: "recursion", topic: "Recursion", title: "Recursion", summary: "Base case, trust the call, combine the result." },
             { slug: "backtracking", topic: "Backtracking", title: "Backtracking", summary: "Walk a decision tree: choose, explore, undo." },
             { slug: "dynamic-programming", topic: "Dynamic Programming", title: "Dynamic Programming", summary: "Recursion plus a memo, then the same thing as a table." },
-            { slug: "greedy", topic: "Greedy", title: "Greedy", summary: "Take the best local choice when you can prove it never hurts." },
+            { slug: "greedy", topic: "Greedy", title: "Greedy", summary: "Take the best local choice when I can prove it never hurts." },
             { slug: "bit-manipulation", topic: "Bit Manipulation", title: "Bit Manipulation", summary: "XOR tricks, masks, and counting bits." },
         ],
     },
