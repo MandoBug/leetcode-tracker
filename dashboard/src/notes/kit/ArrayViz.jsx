@@ -13,8 +13,9 @@ const PAD = 12
  *   ranges    [{ from, to, label, color }]  a bracket over cells from..to (inclusive)
  *   showIndex print the index under each cell (default true)
  *   title     small caption on the left, e.g. "nums"
+ *   align     "left" to line several arrays up on their left edge
  */
-export function ArrayViz({ items, states = {}, pointers = [], ranges = [], showIndex = true, title, cell = CELL }) {
+export function ArrayViz({ items, states = {}, pointers = [], ranges = [], showIndex = true, title, cell = CELL, align }) {
     const n = items.length
     const titleW = title ? title.length * 7.5 + 16 : 0
     const x0 = PAD + titleW
@@ -36,7 +37,7 @@ export function ArrayViz({ items, states = {}, pointers = [], ranges = [], showI
     const width = x0 + n * cell + (n - 1) * GAP + PAD
 
     return (
-        <Svg width={width} height={height} label={title ? `array ${title}` : "array"}>
+        <Svg width={width} height={height} label={title ? `array ${title}` : "array"} align={align}>
             {title && (
                 <text x={PAD} y={top + cell / 2} fontSize={12} fill={INK.text3} dominantBaseline="central">{title}</text>
             )}

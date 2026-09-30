@@ -1,12 +1,13 @@
 import { hue, MONO } from "./colors"
 
-// shared <svg> wrapper: scales down on small screens but never grows past its natural size
-export function Svg({ width, height, label, children }) {
+// shared <svg> wrapper: scales down on small screens but never grows past its natural size.
+// align="left" pins it to the left edge (for rows that should line up, like a staircase of arrays)
+export function Svg({ width, height, label, children, align = "center" }) {
     return (
         <svg
             viewBox={`0 0 ${width} ${height}`}
             width="100%"
-            style={{ maxWidth: width, display: "block", margin: "0 auto", overflow: "visible" }}
+            style={{ maxWidth: width, display: "block", margin: align === "left" ? "0" : "0 auto", overflow: "visible" }}
             role="img"
             aria-label={label}
             fontFamily={MONO}
