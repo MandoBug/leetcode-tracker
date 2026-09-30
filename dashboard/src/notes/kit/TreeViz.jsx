@@ -106,10 +106,9 @@ export function TreeViz({ root, binary = true, dx = 50, dy = 66, label = "tree",
                                 </text>
                             </g>
                         )}
+                        {/* the note gets a dark backing (Tag) so an edge running under it doesn't cut through the text */}
                         {node.note && (
-                            <text x={X(px)} y={Y(py) + 31} fontSize={10.5} fill={node.noteColor ? hue(node.noteColor) : INK.text3} textAnchor="middle">
-                                {node.note}
-                            </text>
+                            <Tag x={X(px)} y={Y(py) + 28} text={node.note} color={node.noteColor ? hue(node.noteColor) : INK.text3} size={10.5} />
                         )}
                     </g>
                 )
