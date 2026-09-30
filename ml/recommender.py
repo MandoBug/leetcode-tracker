@@ -90,34 +90,30 @@ def calculate_recency_weight(last_seen):
     days_since = (now - last_seen).days
     return math.log(days_since + 1) + 1 # logarithmic scaling to avoid huge weights for very old topics
 
-#Here, we get a random unseen problem for a topic, we can optionally filter by difficulty as well
-def get_refresh_problem(topic, exclude_titles, difficulty=None):
-    """gets a random unseen problem for a topic"""
+# the difficulties we suggest for every topic. Easy for days when my brain is fried, Medium for real interview practice
+SUGGESTION_DIFFICULTIES = ["Easy", "Medium"]
+
+#Here, we get a random unseen problem for a topic, optionally for one difficulty
+def get_new_problem(topic, exclude_titles, difficulty=None):
+    """gets a random unseen, non-premium problem for a topic"""
     conn = get_connection()
     cur = conn.cursor()
-    
-    if difficulty:
-        cur.execute("""
-            SELECT title, title_slug FROM problems
-            WHERE %s = ANY(topics)
-            AND difficulty = %s
-            AND title NOT IN %s
-            ORDER BY RANDOM()
-            LIMIT 1
-        """, (topic, difficulty, tuple(exclude_titles) if exclude_titles else ('',)))
-    else:
-        cur.execute("""
-            SELECT title, title_slug FROM problems
-            WHERE %s = ANY(topics)
-            AND title NOT IN %s
-            ORDER BY RANDOM()
-            LIMIT 1
-        """, (topic, tuple(exclude_titles) if exclude_titles else ('',)))
-    
+    # NOT (title = ANY(%s)) means "title isn't in this list". it works with an empty list too,
+    # which the old `NOT IN %s` version needed a ('',) placeholder for
+    # (%s IS NULL OR difficulty = %s) lets one query handle both "any difficulty" and "only this difficulty"
+    cur.execute("""
+        SELECT title, title_slug, difficulty FROM problems
+        WHERE %s = ANY(topics)
+        AND NOT paid_only
+        AND NOT (title = ANY(%s))
+        AND (%s IS NULL OR difficulty = %s)
+        ORDER BY RANDOM()
+        LIMIT 1
+    """, (topic, list(exclude_titles), difficulty, difficulty))
     row = cur.fetchone()
     cur.close()
     conn.close()
-    return {"title": row[0], "slug": row[1]} if row else None
+    return {"title": row[0], "slug": row[1], "difficulty": row[2]} if row else None
 
 #Now we fetch oldest problems for a topic, which are the ones I should be refreshing on
 def get_oldest_problem(topic):
@@ -195,7 +191,10 @@ def get_recommendations():
     # before, we fetched problems for EVERY topic and then threw most of them away,
     # which was 2 database connections per topic (100+ for 50 topics) on every cache miss
     for rec in recommendations:
-        rec["new_problem"] = get_refresh_problem(rec["topic"], solved_titles)
+        # one pick per difficulty, e.g. {"Easy": {...}, "Medium": {...}}
+        rec["new_problems"] = {
+            d: get_new_problem(rec["topic"], solved_titles, d) for d in SUGGESTION_DIFFICULTIES
+        }
         rec["refresh_problem"] = get_oldest_problem(rec["topic"])
     
     return recommendations
@@ -208,8 +207,9 @@ if __name__ == "__main__":
         print(f"  solved {r['count']} problems | last: {r['days_since_last']} days ago")
         if r['refresh_problem']:
             print(f"  refresh: {r['refresh_problem']['title']} ({r['refresh_problem']['days_ago']} days ago)")
-        if r['new_problem']:
-            print(f"  try next: {r['new_problem']['title']}")
+        for d, p in r['new_problems'].items():
+            if p:
+                print(f"  try ({d}): {p['title']}")
 
 # Big picture of this file:
 # this is where we generate the recommendations for which topics to focus on, we only look at
@@ -218,4 +218,4 @@ if __name__ == "__main__":
 # how long it's been since I last did it, and the difficulty breakdown of the problems I've done in that topic,
 # then we assign a tier based on how long it's been since I last did it and how
 # many times I've done it, then we sort the topics by priority score and keep the top 10,
-# and finally we get a new problem suggestion and an old problem to refresh on for each of those 10.
+# and finally we get an Easy and a Medium problem to try (never premium) and an old problem to refresh on for each of those 10.
