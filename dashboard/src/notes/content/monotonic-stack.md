@@ -1,6 +1,6 @@
 ## The idea
 
-A monotonic stack is a stack whose values stay **sorted** (only increasing, or only decreasing, from bottom to top). When a new element would break the order, you pop until it fits. The key insight: **every element you pop has just met its answer**. The new element is the first thing to its right that beats it.
+A monotonic stack is a stack whose values stay **sorted** (only increasing, or only decreasing, from bottom to top). When a new element would break the order, I pop until it fits. The key insight: **every element I pop has just met its answer**. The new element is the first thing to its right that beats it.
 
 That turns "for every element, find the next greater (or smaller) element" from O(n²) into O(n), because each element is pushed once and popped at most once.
 
@@ -26,7 +26,7 @@ class Solution:
         return answer                    # days left in the stack never warm up: 0
 ```
 
-> **Tip:** Store **indexes** on the stack, not values. You can always look the value up, and the index gives you distances and a place to write the answer.
+> **Tip:** Store **indexes** on the stack, not values. I can always look the value up, and the index gives me distances and a place to write the answer.
 
 ## The template
 

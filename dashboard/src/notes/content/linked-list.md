@@ -1,6 +1,6 @@
 ## The idea
 
-A linked list is a chain of nodes where each node knows only the **next** one. There's no index, so reaching the 5th node means walking 5 steps. What you get in return: inserting or removing a node you're already standing at is O(1), just rewire a pointer.
+A linked list is a chain of nodes where each node knows only the **next** one. There's no index, so reaching the 5th node means walking 5 steps. What I get in return: inserting or removing a node I'm already standing at is O(1), just rewire a pointer.
 
 ```python
 class ListNode:
@@ -11,7 +11,7 @@ class ListNode:
 
 Almost every linked list problem is **pointer rewiring**, and the bugs are always the same: losing the rest of the list, or forgetting the head changed. Two habits prevent both:
 
-1. **Save `next` before you overwrite it.**
+1. **Save `next` before I overwrite it.**
 2. **Use a dummy node** in front of the head, so the head is never a special case.
 
 ## The dummy node
